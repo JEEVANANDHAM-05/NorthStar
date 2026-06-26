@@ -1,0 +1,21 @@
+# Environment variables (Sensitive)
+.env
+.env.local
+.env.*.local
+backend/.env
+
+# Environments
+.venv/
+venv/
+ENV/
+env/
+../.venv/
+
+# Python caches
+__pycache__/
+backend/__pycache__/
+*.py[cod]
+
+# IDEs
+.vscode/
+.idea/

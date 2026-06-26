@@ -1,0 +1,121 @@
+/* ============================================
+  DESIGN TOKENS — NorthStar
+   ============================================ */
+:root {
+  /* Brand Colors */
+  --primary:        #1B2A47;
+  --primary-rgb:    27, 42, 71;
+  --primary-dark:   #121C30;
+  --primary-light:  #EFF3F8;
+  --secondary:      #1F563B;
+  --secondary-rgb:  31, 86, 59;
+  --secondary-dark: #153C29;
+  --secondary-light:#EEF4F0;
+  --accent:         #C5A059;
+  --accent-rgb:     197, 160, 89;
+  --accent-dark:    #A6803D;
+  --accent-light:   #FAF6EE;
+
+  /* Neutrals */
+  --bg:             #FAF9F6;
+  --bg-white:       #FFFFFF;
+  --surface:        #F5F3EF;
+  --border:         #E7E3DC;
+  --border-focus:   #1B2A47;
+
+  /* Text */
+  --text:           #1C2024;
+  --text-secondary: #58606B;
+  --text-muted:     #8D96A3;
+  --text-inverse:   #FFFFFF;
+
+  /* Status */
+  --success:        #1F563B;
+  --success-bg:     #EEF4F0;
+  --warning:        #B27A23;
+  --warning-bg:     #FCF7ED;
+  --error:          #992E2E;
+  --error-bg:       #FAF2F2;
+  --info:           #2A597E;
+  --info-bg:       #EDF3F7;
+
+  /* Typography */
+  --font-heading:   'Poppins', sans-serif;
+  --font-body:      'Inter', sans-serif;
+
+  --text-xs:    0.75rem;
+  --text-sm:    0.875rem;
+  --text-base:  1rem;
+  --text-lg:    1.125rem;
+  --text-xl:    1.25rem;
+  --text-2xl:   1.5rem;
+  --text-3xl:   1.875rem;
+  --text-4xl:   2.25rem;
+  --text-5xl:   3rem;
+  --text-6xl:   3.75rem;
+
+  --fw-normal:  400;
+  --fw-medium:  500;
+  --fw-semi:    600;
+  --fw-bold:    700;
+  --fw-black:   800;
+
+  --lh-tight:   1.2;
+  --lh-snug:    1.4;
+  --lh-normal:  1.6;
+  --lh-relaxed: 1.8;
+
+  /* Spacing */
+  --sp-1:  0.25rem;
+  --sp-2:  0.5rem;
+  --sp-3:  0.75rem;
+  --sp-4:  1rem;
+  --sp-5:  1.25rem;
+  --sp-6:  1.5rem;
+  --sp-8:  2rem;
+  --sp-10: 2.5rem;
+  --sp-12: 3rem;
+  --sp-16: 4rem;
+  --sp-20: 5rem;
+  --sp-24: 6rem;
+
+  /* Border Radius */
+  --radius-sm:   4px;
+  --radius:      8px;
+  --radius-md:   12px;
+  --radius-lg:   16px;
+  --radius-xl:   24px;
+  --radius-2xl:  32px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-xs: 0 1px 2px rgba(27, 42, 71, 0.03);
+  --shadow-sm: 0 2px 12px rgba(27, 42, 71, 0.04);
+  --shadow:    0 4px 20px rgba(27, 42, 71, 0.06);
+  --shadow-md: 0 8px 24px rgba(27, 42, 71, 0.08);
+  --shadow-lg: 0 16px 36px rgba(27, 42, 71, 0.10);
+  --shadow-xl: 0 24px 48px rgba(27, 42, 71, 0.12);
+  --shadow-primary: 0 8px 24px rgba(27, 42, 71, 0.12);
+  --shadow-green:   0 8px 24px rgba(31, 86, 59, 0.12);
+
+  /* Glassmorphism */
+  --glass-bg:     rgba(250, 249, 246, 0.78);
+  --glass-border: rgba(231, 227, 220, 0.5);
+  --glass-blur:   blur(16px);
+
+  /* Transitions */
+  --transition-fast:   all 0.15s ease;
+  --transition:        all 0.25s ease;
+  --transition-slow:   all 0.4s ease;
+
+  /* Z-index */
+  --z-dropdown: 100;
+  --z-sticky:   200;
+  --z-fixed:    300;
+  --z-modal:    400;
+  --z-toast:    500;
+
+  /* Layout */
+  --container: 1200px;
+  --nav-height: 72px;
+}
