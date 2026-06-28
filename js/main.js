@@ -2,12 +2,16 @@
   MAIN JS — NorthStar
    ============================================ */
 
-// Navbar scroll effect
+// Navbar scroll effect and active link highlight
 const navbar = document.getElementById('navbar');
-window.addEventListener('scroll', () => {
+function handleNavbarState() {
   navbar?.classList.toggle('scrolled', window.scrollY > 20);
   updateActiveNav();
-}, { passive: true });
+}
+window.addEventListener('scroll', handleNavbarState, { passive: true });
+window.addEventListener('DOMContentLoaded', handleNavbarState);
+// Run immediately to establish initial state on page enter/refresh
+handleNavbarState();
 
 // Hamburger menu
 const hamburger = document.getElementById('hamburger');
@@ -86,18 +90,54 @@ function smoothScrollTo(targetPosition, duration, callback) {
   requestAnimationFrame(animation);
 }
 
-// Active nav link via IntersectionObserver
-const sections = document.querySelectorAll('section[id]');
-const navLinks = document.querySelectorAll('.nav-link[href^="#"]');
+// Active nav link selection
 function updateActiveNav() {
+  const path = window.location.pathname;
+
+  // 1. If we are on a subpage, highlight the corresponding link by URL match
+  if (path.includes('about.html')) {
+    document.querySelectorAll('.nav-link').forEach(link => {
+      const href = link.getAttribute('href') || '';
+      link.classList.toggle('active', href.includes('about.html'));
+    });
+    return;
+  }
+
+  if (path.includes('services.html') || path.includes('tax-planning.html') || path.includes('insurance.html')) {
+    document.querySelectorAll('.nav-link').forEach(link => {
+      const href = link.getAttribute('href') || '';
+      link.classList.toggle('active', href.includes('services.html'));
+    });
+    return;
+  }
+
+  // 2. Homepage scroll position based highlighting
   let current = '';
+  const trackedSectionIds = ['home', 'services', 'testimonials', 'contact'];
+  const sections = document.querySelectorAll('section[id]');
+  
   sections.forEach(sec => {
-    const top = sec.offsetTop - 120;
-    if (window.scrollY >= top) current = sec.id;
+    if (trackedSectionIds.includes(sec.id)) {
+      const top = sec.offsetTop - 150; // trigger highlight slightly earlier
+      if (window.scrollY >= top) {
+        current = sec.id;
+      }
+    }
   });
+
+  const navLinks = document.querySelectorAll('.nav-link');
   navLinks.forEach(link => {
-    const href = link.getAttribute('href').slice(1);
-    link.classList.toggle('active', href === current);
+    const href = link.getAttribute('href') || '';
+    if (href.startsWith('#')) {
+      const sectionId = href.slice(1);
+      link.classList.toggle('active', sectionId === current);
+    } else if (href.includes('index.html#')) {
+      const sectionId = href.split('#')[1];
+      link.classList.toggle('active', sectionId === current);
+    } else {
+      // Non-homepage links (like about.html) should not be active on homepage scroll
+      link.classList.remove('active');
+    }
   });
 }
 

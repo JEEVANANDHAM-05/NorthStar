@@ -358,15 +358,17 @@ select.form-control {
 }
 
 .navbar-logo-img {
-  height: 60px;
-  width: 60px;
+  height: 90px;
+  /* Increased from 68px */
+  width: 90px;
   object-fit: contain;
   display: block;
 }
 
 .footer-logo-img {
-  height: 56px;
-  width: auto;
+  height: 90px;
+  /* Increased from 56px */
+  width: 90px;
   object-fit: contain;
   display: block;
   filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.18));
@@ -383,17 +385,23 @@ select.form-control {
   color: var(--primary);
 }
 
+/* For dark navbar links (active on the pages) */
 .navbar-dark .nav-link {
-  color: rgba(27, 42, 71, 0.8);
+  color: #1b2a47;
+  /* Slate dark blue default text for better visibility on gold */
 }
 
 .navbar-dark .nav-link:hover,
 .navbar-dark .nav-link.active {
-  color: var(--primary-dark);
+  color: #ffffff !important;
+  /* White color when element is chosen/hovered */
+  background-color: var(--primary);
+  /* Dark primary background pill for premium contrast */
 }
 
 .navbar-dark .nav-link.active::after {
-  background: var(--primary);
+  display: none !important;
+  /* Hide old underline to support the new pill background */
 }
 
 .navbar-dark .navbar-phone svg {
@@ -411,10 +419,13 @@ select.form-control {
 }
 
 .nav-link {
-  padding: var(--sp-2) var(--sp-3);
+  padding: var(--sp-2) var(--sp-4);
+  /* Increased horizontal padding for pill design */
   border-radius: var(--radius);
-  font-size: var(--text-sm);
-  font-weight: var(--fw-medium);
+  font-size: 1.05rem;
+  /* Increased size of navbar elements */
+  font-weight: var(--fw-bold);
+  /* Bolder text for visibility */
   color: var(--text-secondary);
   transition: var(--transition);
   position: relative;
@@ -2143,7 +2154,8 @@ input:checked+.toggle-slider::before {
 @media (max-width: 767px) {
   :root {
     --nav-height: 64px;
-    --sp-20: 3rem;   /* reduce section vertical padding */
+    --sp-20: 3rem;
+    /* reduce section vertical padding */
     --sp-16: 2.5rem;
     --sp-12: 2rem;
   }
@@ -2595,15 +2607,17 @@ input:checked+.toggle-slider::before {
   }
 
   .navbar-logo-img {
-    height: 40px;
-    width: 40px;
+    height: 58px;
+    /* Increased from 48px */
+    width: 58px;
   }
 }
 
 /* ── Extra Small Mobile (≤ 360px) ─────────────── */
 @media (max-width: 360px) {
   :root {
-    --nav-height: 58px;
+    --nav-height: 66px;
+    /* Increased from 58px */
   }
 
   .container {
@@ -2658,6 +2672,7 @@ input:checked+.toggle-slider::before {
 
 /* ── Touch device enhancements ─────────────── */
 @media (hover: none) and (pointer: coarse) {
+
   /* Remove hover transforms on touch devices to avoid stuck states */
   .card:hover,
   .service-card:hover,
@@ -2713,7 +2728,8 @@ input:checked+.toggle-slider::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(15, 23, 42, 0.65); /* Slate-900 with opacity */
+  background-color: rgba(15, 23, 42, 0.65);
+  /* Slate-900 with opacity */
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   display: flex;
@@ -2741,8 +2757,8 @@ input:checked+.toggle-slider::before {
   max-height: 90vh;
   overflow-y: auto;
   padding: var(--sp-8) var(--sp-10);
-  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25), 
-              0 0 0 1px rgba(15, 23, 42, 0.05);
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25),
+    0 0 0 1px rgba(15, 23, 42, 0.05);
   position: relative;
   transform: translateY(24px) scale(0.97);
   transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -2808,7 +2824,8 @@ input:checked+.toggle-slider::before {
   background: none !important;
   border: none !important;
   cursor: pointer;
-  color: #cbd5e1; /* Visible light grey initially (slate-300) */
+  color: #cbd5e1;
+  /* Visible light grey initially (slate-300) */
   transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.15s ease;
   padding: 0;
   outline: none;
@@ -2821,7 +2838,8 @@ input:checked+.toggle-slider::before {
 /* Color definitions for selected/hovered state */
 .star-btn.hover,
 .star-btn.active {
-  color: #fbbf24; /* Golden yellow */
+  color: #fbbf24;
+  /* Golden yellow */
   text-shadow: 0 0 8px rgba(251, 191, 36, 0.4);
 }
 

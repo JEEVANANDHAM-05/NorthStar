@@ -19,8 +19,14 @@ window.initTestimonialsCarousel = function () {
     clearInterval(window.carouselAutoPlayInterval);
   }
 
-  function next() { goTo(current + 1); }
-  function prev() { goTo(current - 1); }
+  function next() {
+    console.log("[Carousel] next() called. current before:", current, "total:", total);
+    goTo(current + 1);
+  }
+  function prev() {
+    console.log("[Carousel] prev() called. current before:", current, "total:", total);
+    goTo(current - 1);
+  }
 
   function startAutoPlay() {
     stopAutoPlay();
@@ -56,7 +62,9 @@ window.initTestimonialsCarousel = function () {
   }
 
   function goTo(index) {
+    const prevVal = current;
     current = (index + total) % total;
+    console.log("[Carousel] goTo() resolved. index input:", index, "prev index:", prevVal, "resolved current:", current, "total:", total);
     track.style.transform = `translateX(-${current * 100}%)`;
     updateDotStates(current);
     carousel.setAttribute('aria-label', `Client testimonials carousel, slide ${current + 1} of ${total}`);
@@ -67,11 +75,13 @@ window.initTestimonialsCarousel = function () {
   const nextBtn = document.getElementById('next-btn');
   if (prevBtn) {
     const newPrevBtn = prevBtn.cloneNode(true);
+    newPrevBtn.removeAttribute('onclick');
     prevBtn.parentNode.replaceChild(newPrevBtn, prevBtn);
     newPrevBtn.addEventListener('click', () => { prev(); startAutoPlay(); });
   }
   if (nextBtn) {
     const newNextBtn = nextBtn.cloneNode(true);
+    newNextBtn.removeAttribute('onclick');
     nextBtn.parentNode.replaceChild(newNextBtn, nextBtn);
     newNextBtn.addEventListener('click', () => { next(); startAutoPlay(); });
   }
