@@ -730,10 +730,7 @@ async def submit_feedback(
     )
     check_rate_limit(client_ip)
     
-    # ── 2. CAPTCHA ───────────────────────────
-    token = payload.captcha_token or request.headers.get("X-Captcha-Token", "")
-    if HCAPTCHA_SECRET and not await verify_captcha(token):
-        raise HTTPException(status_code=400, detail="CAPTCHA verification failed. Please try again.")
+    # ── 2. CAPTCHA (Disabled for reviews since the modal lacks a captcha widget) ──
 
     # ── 3. Check Web App URL ─────────────────
     if not GOOGLE_SHEET_WEBAPP_URL:
