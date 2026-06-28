@@ -2701,3 +2701,144 @@ input:checked+.toggle-slider::before {
     height: 44px;
   }
 }
+
+/* ─────────────────────────────────────────────
+   FEEDBACK MODAL & INTERACTIVE STAR RATING
+   ───────────────────────────────────────────── */
+
+/* Modal Overlay with Backdrop Blur */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(15, 23, 42, 0.65); /* Slate-900 with opacity */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s;
+  padding: var(--sp-4);
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Modal Content Box */
+.modal-content {
+  background: var(--bg-white);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: var(--radius-xl);
+  max-width: 580px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: var(--sp-8) var(--sp-10);
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25), 
+              0 0 0 1px rgba(15, 23, 42, 0.05);
+  position: relative;
+  transform: translateY(24px) scale(0.97);
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal-overlay.active .modal-content {
+  transform: translateY(0) scale(1);
+}
+
+/* Modal Header styling */
+.modal-title {
+  font-family: var(--font-poppins), sans-serif;
+  font-size: var(--text-2xl);
+  font-weight: var(--fw-bold);
+  color: var(--text);
+  margin-bottom: var(--sp-2);
+}
+
+.modal-subtitle {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  margin-bottom: var(--sp-6);
+  line-height: var(--lh-relaxed);
+}
+
+/* Close Button with premium styling */
+.modal-close-btn {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 10;
+  padding-bottom: 2px;
+}
+
+.modal-close-btn:hover {
+  background: var(--border);
+  color: var(--text);
+  transform: rotate(90deg);
+}
+
+/* Interactive Star Rating Selector */
+.star-rating-selector {
+  display: flex;
+  justify-content: center;
+  gap: var(--sp-2);
+}
+
+.star-btn {
+  font-size: 2.2rem;
+  background: none !important;
+  border: none !important;
+  cursor: pointer;
+  color: var(--border); /* Gray initially */
+  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.15s ease;
+  padding: 0;
+  outline: none;
+}
+
+.star-btn:hover {
+  transform: scale(1.2);
+}
+
+/* Color definitions for selected/hovered state */
+.star-btn.hover,
+.star-btn.active {
+  color: #fbbf24; /* Golden yellow */
+  text-shadow: 0 0 8px rgba(251, 191, 36, 0.4);
+}
+
+/* Button Loading Spinner */
+.btn-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: btn-spin 0.8s linear infinite;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+@keyframes btn-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

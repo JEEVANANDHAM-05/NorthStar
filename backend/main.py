@@ -11,7 +11,7 @@ from pydantic import BaseModel, field_validator
 from typing import Optional
 from datetime import datetime, timedelta, timezone
 from collections import defaultdict
-import os, re, smtplib, logging, httpx, html
+import os, re, logging, httpx, html
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from dotenv import load_dotenv
@@ -46,15 +46,25 @@ app.add_middleware(
 # Config (from .env)
 # ─────────────────────────────────────────────
 ADMIN_EMAIL   = os.getenv("ADMIN_EMAIL",  "workwithnorthstar@gmail.com")
-SMTP_HOST     = os.getenv("SMTP_HOST",    "smtp.gmail.com")
-SMTP_PORT     = int(os.getenv("SMTP_PORT", "587"))
-SMTP_USER     = os.getenv("SMTP_USER",    "")
-SMTP_PASS     = os.getenv("SMTP_PASS",    "")
+
+# Primary email provider preference: "resend" or "sendgrid" (defaults to "resend")
+PRIMARY_PROVIDER = os.getenv("PRIMARY_PROVIDER", "resend").strip().lower()
+
+# HTTP API keys for Resend and SendGrid
+RESEND_API_KEY   = os.getenv("RESEND_API_KEY", "")
+SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY", "")
+
+# Optional custom sender email linked to your verified domain (e.g. "info@yourdomain.com")
+SENDER_EMAIL     = os.getenv("SENDER_EMAIL", "").strip()
 
 # hCaptcha (optional — set HCAPTCHA_SECRET and HCAPTCHA_SITEKEY in .env to enable)
 HCAPTCHA_SECRET  = os.getenv("HCAPTCHA_SECRET", "")
 HCAPTCHA_SITEKEY = os.getenv("HCAPTCHA_SITEKEY", "")
 HCAPTCHA_VERIFY  = "https://hcaptcha.com/siteverify"
+
+# Google Sheets Web App URL for Customer Feedback Integration
+GOOGLE_SHEET_WEBAPP_URL = os.getenv("GOOGLE_SHEET_WEBAPP_URL", "").strip()
+
 
 
 # Rate limiting: max N requests per IP per window
@@ -173,10 +183,60 @@ class EnquiryRequest(BaseModel):
         return v
 
 
+class FeedbackRequest(BaseModel):
+    name:           str
+    role:           Optional[str] = None
+    rating:         int
+    message:        str
+    captcha_token:  Optional[str] = None
+
+    @field_validator("name")
+    @classmethod
+    def validate_name(cls, v: str) -> str:
+        v = v.strip()
+        if len(v) < 2:
+            raise ValueError("Name must be at least 2 characters.")
+        if len(v) > 100:
+            raise ValueError("Name must not exceed 100 characters.")
+        if not re.match(r"^[A-Za-z\s\.\-']+$", v):
+            raise ValueError("Name contains invalid characters.")
+        return v
+
+    @field_validator("role")
+    @classmethod
+    def validate_role(cls, v: Optional[str]) -> Optional[str]:
+        if v:
+            v = v.strip()
+            if len(v) > 100:
+                raise ValueError("Role or location must not exceed 100 characters.")
+            if not re.match(r"^[A-Za-z0-9\s\.\,\-\'\/]+$", v):
+                raise ValueError("Role or location contains invalid characters.")
+            return v
+        return None
+
+    @field_validator("rating")
+    @classmethod
+    def validate_rating(cls, v: int) -> int:
+        if v < 1 or v > 5:
+            raise ValueError("Rating must be an integer between 1 and 5.")
+        return v
+
+    @field_validator("message")
+    @classmethod
+    def validate_message(cls, v: str) -> str:
+        v = v.strip()
+        if len(v) < 10:
+            raise ValueError("Feedback message must be at least 10 characters.")
+        if len(v) > 1000:
+            raise ValueError("Feedback message must not exceed 1000 characters.")
+        return v
+
+
 class ContactResponse(BaseModel):
     success:     bool
     message:     str
     enquiry_id:  Optional[str] = None
+
 
 
 # ─────────────────────────────────────────────
@@ -346,90 +406,368 @@ def _build_user_html_email(e: dict) -> str:
 </html>"""
 
 
-def send_admin_email(enquiry: dict) -> None:
-    """Send admin notification email and user confirmation email in one SMTP session."""
-    if not SMTP_USER or not SMTP_PASS:
-        logger.info("SMTP not configured — skipping email for %s", enquiry["enquiry_id"])
-        return
+def send_via_resend(enquiry: dict) -> bool:
+    """Send admin notification email and user confirmation email via Resend API.
+    Returns True if successfully sent, False otherwise.
+    """
+    if not RESEND_API_KEY:
+        logger.warning("Resend API key is missing — skipping email for %s", enquiry["enquiry_id"])
+        return False
+
+    # Use custom sender domain mail or fallback to admin mail
+    raw_from = SENDER_EMAIL or ADMIN_EMAIL
+    from_email = f"NorthStar Contact <{raw_from}>" if "<" not in raw_from else raw_from
 
     try:
-        # 1. Construct Admin Notification Message
-        admin_msg = MIMEMultipart("alternative")
-        admin_msg["Subject"] = (
-            f"[NorthStar] New Enquiry {enquiry['enquiry_id']} — {enquiry['service']}"
-        )
-        admin_msg["From"]    = f"NorthStar Contact <{SMTP_USER}>"
-        admin_msg["To"]      = ADMIN_EMAIL
-        admin_msg["Reply-To"] = enquiry.get("email") or SMTP_USER
+        headers = {
+            "Authorization": f"Bearer {RESEND_API_KEY}",
+            "Content-Type": "application/json",
+        }
 
-        admin_plain = (
-            f"New enquiry from {enquiry['name']}\n\n"
-            f"ID      : {enquiry['enquiry_id']}\n"
-            f"Phone   : {enquiry['phone']}\n"
-            f"Email   : {enquiry.get('email') or '—'}\n"
-            f"Service : {enquiry['service']}\n"
-            f"Message : {enquiry.get('message') or '—'}\n"
-            f"Time    : {enquiry['created_at']}\n"
-        )
-        admin_msg.attach(MIMEText(admin_plain, "plain", "utf-8"))
-        admin_msg.attach(MIMEText(_build_html_email(enquiry), "html", "utf-8"))
+        # 1. Admin Email
+        admin_payload = {
+            "from": from_email,
+            "to": [ADMIN_EMAIL],
+            "subject": f"[NorthStar] New Enquiry {enquiry['enquiry_id']} — {enquiry['service']}",
+            "html": _build_html_email(enquiry),
+        }
+        if enquiry.get("email"):
+            admin_payload["reply_to"] = enquiry["email"]
 
-        # 2. Construct User Confirmation Message (if email is provided)
-        user_msg = None
-        user_email = enquiry.get("email")
-        if user_email:
-            user_msg = MIMEMultipart("alternative")
-            user_msg["Subject"] = f"[NorthStar] We have received your enquiry — {enquiry['enquiry_id']}"
-            user_msg["From"]    = f"NorthStar Financial Services <{SMTP_USER}>"
-            user_msg["To"]      = user_email
-            user_msg["Reply-To"] = SMTP_USER
-
-            user_plain = (
-                f"Hello {enquiry['name']},\n\n"
-                f"Thank you for contacting NorthStar. We have received your enquiry regarding '{enquiry['service']}'.\n"
-                f"Our team is currently reviewing your details and will get back to you within 24 hours.\n\n"
-                f"For urgent queries, feel free to reach us via WhatsApp at +91 94864 09362.\n\n"
-                f"Best regards,\n"
-                f"NorthStar Team\n\n"
-                f"---\n"
-                f"Disclaimer: This is an auto-generated email confirmation. Please do not reply directly to this message.\n"
-            )
-            user_msg.attach(MIMEText(user_plain, "plain", "utf-8"))
-            user_msg.attach(MIMEText(_build_user_html_email(enquiry), "html", "utf-8"))
-
-        # 3. SMTP Session
-        if SMTP_PORT == 465:
-            smtp_client = smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT)
-        else:
-            smtp_client = smtplib.SMTP(SMTP_HOST, SMTP_PORT)
-
-        with smtp_client as smtp:
-            if SMTP_PORT != 465:
-                smtp.ehlo()
-                smtp.starttls()
-                smtp.ehlo()
-            smtp.login(SMTP_USER, SMTP_PASS)
+        with httpx.Client(timeout=10) as client:
+            resp = client.post("https://api.resend.com/emails", json=admin_payload, headers=headers)
+            if resp.status_code >= 400:
+                logger.error("Resend API error sending admin email: %s", resp.text)
+                return False
             
-            # Send to admin
-            smtp.send_message(admin_msg)
-            logger.info("Admin email sent for %s", enquiry["enquiry_id"])
-            
-            # Send to user (if email is provided)
-            if user_msg:
-                smtp.send_message(user_msg)
-                logger.info("User confirmation email sent to %s for %s", user_email, enquiry["enquiry_id"])
+            logger.info("Admin email sent via Resend for %s", enquiry["enquiry_id"])
 
-    except smtplib.SMTPAuthenticationError:
-        logger.error("SMTP auth failed — check SMTP_USER/SMTP_PASS in .env")
-    except smtplib.SMTPException as exc:
-        logger.error("SMTP error for %s: %s", enquiry["enquiry_id"], exc)
+            # 2. User Confirmation Email
+            user_email = enquiry.get("email")
+            if user_email:
+                user_payload = {
+                    "from": f"NorthStar Financial Services <{raw_from}>" if "<" not in raw_from else raw_from,
+                    "to": [user_email],
+                    "subject": f"[NorthStar] We have received your enquiry — {enquiry['enquiry_id']}",
+                    "html": _build_user_html_email(enquiry),
+                    "reply_to": ADMIN_EMAIL,
+                }
+                resp_user = client.post("https://api.resend.com/emails", json=user_payload, headers=headers)
+                if resp_user.status_code >= 400:
+                    logger.warning("Resend user confirmation email failed (expected if recipient email is unverified on Resend sandbox): %s", resp_user.text)
+                else:
+                    logger.info("User confirmation email sent to %s for %s", user_email, enquiry["enquiry_id"])
+            return True
+
     except Exception as exc:
-        logger.error("Unexpected email error: %s", exc)
+        logger.error("Error sending via Resend: %s", exc)
+        return False
+
+
+def send_via_sendgrid(enquiry: dict) -> bool:
+    """Send admin notification email and user confirmation email via SendGrid API.
+    Returns True if successfully sent, False otherwise.
+    """
+    if not SENDGRID_API_KEY:
+        logger.warning("SendGrid API key is missing — skipping email for %s", enquiry["enquiry_id"])
+        return False
+
+    # SendGrid sender must be verified in the account
+    raw_from = SENDER_EMAIL or ADMIN_EMAIL
+    from_email = raw_from
+
+    try:
+        headers = {
+            "Authorization": f"Bearer {SENDGRID_API_KEY}",
+            "Content-Type": "application/json",
+        }
+
+        # 1. Admin Email
+        admin_payload = {
+            "personalizations": [{
+                "to": [{"email": ADMIN_EMAIL}]
+            }],
+            "from": {
+                "email": from_email,
+                "name": "NorthStar Contact"
+            },
+            "subject": f"[NorthStar] New Enquiry {enquiry['enquiry_id']} — {enquiry['service']}",
+            "content": [{
+                "type": "text/html",
+                "value": _build_html_email(enquiry)
+            }]
+        }
+        if enquiry.get("email"):
+            admin_payload["reply_to"] = {"email": enquiry["email"]}
+
+        with httpx.Client(timeout=10) as client:
+            resp = client.post("https://api.sendgrid.com/v3/mail/send", json=admin_payload, headers=headers)
+            if resp.status_code >= 400:
+                logger.error("SendGrid API error sending admin email: %s", resp.text)
+                return False
+            
+            logger.info("Admin email sent via SendGrid for %s", enquiry["enquiry_id"])
+
+            # 2. User Confirmation Email
+            user_email = enquiry.get("email")
+            if user_email:
+                user_payload = {
+                    "personalizations": [{
+                        "to": [{"email": user_email}]
+                    }],
+                    "from": {
+                        "email": from_email,
+                        "name": "NorthStar Financial Services"
+                    },
+                    "subject": f"[NorthStar] We have received your enquiry — {enquiry['enquiry_id']}",
+                    "content": [{
+                        "type": "text/html",
+                        "value": _build_user_html_email(enquiry)
+                    }],
+                    "reply_to": {"email": from_email}
+                }
+                resp_user = client.post("https://api.sendgrid.com/v3/mail/send", json=user_payload, headers=headers)
+                if resp_user.status_code >= 400:
+                    logger.error("SendGrid API error sending user confirmation email: %s", resp_user.text)
+                else:
+                    logger.info("User confirmation email sent via SendGrid to %s for %s", user_email, enquiry["enquiry_id"])
+            return True
+
+    except Exception as exc:
+        logger.error("Error sending via SendGrid: %s", exc)
+        return False
+
+
+def send_admin_email(enquiry: dict) -> None:
+    """Send email notifications via Resend or SendGrid with automatic failover."""
+    # Define primary and backup based on configuration
+    if PRIMARY_PROVIDER == "sendgrid":
+        providers = [
+            ("SendGrid", send_via_sendgrid),
+            ("Resend", send_via_resend)
+        ]
+    else:
+        providers = [
+            ("Resend", send_via_resend),
+            ("SendGrid", send_via_sendgrid)
+        ]
+
+    # Try each configured provider in order until one succeeds
+    sent_successfully = False
+    for name, send_func in providers:
+        try:
+            logger.info("Attempting to dispatch email via %s...", name)
+            if send_func(enquiry):
+                logger.info("Successfully dispatched email using %s.", name)
+                sent_successfully = True
+                break
+            else:
+                logger.warning("%s dispatch failed (limit reached, error, or not configured). Trying backup...", name)
+        except Exception as e:
+            logger.error("Error during %s dispatch: %s. Trying backup...", name, e)
+
+    if not sent_successfully:
+        logger.critical("All email providers failed! Enquiry notification %s was NOT sent.", enquiry["enquiry_id"])
+
+
+# ─────────────────────────────────────────────
+# Testimonials & Feedback Cache / Fallback System
+# ─────────────────────────────────────────────
+DEFAULT_TESTIMONIALS = [
+    {
+        "name": "Rajesh Kumar",
+        "role": "Salaried Professional, Mumbai",
+        "rating": 5,
+        "message": "Filed my ITR within a day. The team explained every deduction clearly. Highly recommended for anyone who finds taxes confusing."
+    },
+    {
+        "name": "Priya Sharma",
+        "role": "Freelancer, Bangalore",
+        "rating": 5,
+        "message": "I had multiple income sources and was worried about filing errors. NorthStar handled everything perfectly and even helped me save more tax than I expected."
+    },
+    {
+        "name": "Anil Mehta",
+        "role": "Small Business Owner, Delhi",
+        "rating": 5,
+        "message": "GST filing used to be a monthly headache. Now I just share my documents and they handle the rest. Very professional and always on time."
+    },
+    {
+        "name": "Sunita Joshi",
+        "role": "Business Owner, Pune",
+        "rating": 5,
+        "message": "I received a notice from the IT department and was panicking. NorthStar resolved it within 48 hours. Their expertise is unmatched."
+    },
+    {
+        "name": "Vikram Nair",
+        "role": "IT Professional, Hyderabad",
+        "rating": 4,
+        "message": "Best tax filing experience. The dashboard makes it so easy to track the status. Refund came in 3 weeks. Will definitely use again!"
+    },
+    {
+        "name": "Neha Verma",
+        "role": "First-time Taxpayer, Chennai",
+        "rating": 5,
+        "message": "As a first-time taxpayer I was completely lost. The team guided me step by step. Super patient and professional. Highly recommended!"
+    }
+]
+
+CACHE_FILE = os.path.join(os.path.dirname(__file__), "feedback_cache.json")
+_feedback_cache = {"last_updated": None, "data": DEFAULT_TESTIMONIALS}
+
+
+def load_local_cache():
+    global _feedback_cache
+    if os.path.exists(CACHE_FILE):
+        try:
+            import json
+            with open(CACHE_FILE, "r", encoding="utf-8") as f:
+                cached_data = json.load(f)
+                if isinstance(cached_data, list):
+                    _feedback_cache["data"] = cached_data
+                elif isinstance(cached_data, dict) and "data" in cached_data:
+                    _feedback_cache = cached_data
+                logger.info("Loaded feedback cache from file with %d items.", len(_feedback_cache["data"]))
+        except Exception as e:
+            logger.error("Failed to load local feedback cache file: %s", e)
+
+
+async def refresh_feedback_cache():
+    global _feedback_cache
+    if not GOOGLE_SHEET_WEBAPP_URL:
+        return
+    
+    try:
+        logger.info("Fetching fresh feedback from Google Sheet Web App...")
+        async with httpx.AsyncClient(timeout=10) as client:
+            resp = await client.get(GOOGLE_SHEET_WEBAPP_URL)
+            if resp.status_code == 200:
+                resp_json = resp.json()
+                if isinstance(resp_json, list):
+                    valid_feedbacks = []
+                    for fb in resp_json:
+                        if isinstance(fb, dict) and "name" in fb and "rating" in fb and "message" in fb:
+                            valid_feedbacks.append({
+                                "name": html.escape(str(fb["name"])),
+                                "role": html.escape(str(fb.get("role", ""))),
+                                "rating": min(5, max(1, int(fb["rating"]))),
+                                "message": html.escape(str(fb["message"]))
+                            })
+                    
+                    if valid_feedbacks:
+                        _feedback_cache["data"] = valid_feedbacks
+                        _feedback_cache["last_updated"] = datetime.now(timezone.utc).isoformat()
+                        
+                        import json
+                        with open(CACHE_FILE, "w", encoding="utf-8") as f:
+                            json.dump(_feedback_cache, f, ensure_ascii=False, indent=2)
+                        logger.info("Feedback cache successfully updated from Google Sheet. Items: %d", len(valid_feedbacks))
+                    else:
+                        logger.warning("Google Sheet returned no valid feedback entries.")
+                else:
+                    logger.error("Google Sheet response was not a JSON list: %s", resp_json)
+            else:
+                logger.error("Failed to fetch from Google Sheet. Status: %d", resp.status_code)
+    except Exception as e:
+        logger.error("Error refreshing feedback cache: %s", e)
+
+
+@app.on_event("startup")
+async def startup_event():
+    load_local_cache()
+    if GOOGLE_SHEET_WEBAPP_URL:
+        import asyncio
+        asyncio.create_task(refresh_feedback_cache())
 
 
 # ─────────────────────────────────────────────
 # Routes
 # ─────────────────────────────────────────────
+
+@app.get("/api/feedback", tags=["Feedback"])
+async def get_feedback(background_tasks: BackgroundTasks):
+    """
+    Get all approved testimonials.
+    If the cache is empty or older than 10 minutes, triggers a background refresh.
+    """
+    global _feedback_cache
+    
+    cache_needs_refresh = False
+    if GOOGLE_SHEET_WEBAPP_URL:
+        if not _feedback_cache.get("last_updated"):
+            cache_needs_refresh = True
+        else:
+            try:
+                last_updated = datetime.fromisoformat(_feedback_cache["last_updated"])
+                now = datetime.now(timezone.utc)
+                if (now - last_updated).total_seconds() > 600: # 10 minutes
+                    cache_needs_refresh = True
+            except Exception:
+                cache_needs_refresh = True
+                
+    if cache_needs_refresh:
+        logger.info("Triggering background feedback cache refresh...")
+        background_tasks.add_task(refresh_feedback_cache)
+        
+    return _feedback_cache["data"]
+
+
+@app.post("/api/feedback", tags=["Feedback"])
+async def submit_feedback(
+    payload: FeedbackRequest,
+    request: Request,
+):
+    """
+    Submit user feedback.
+    1. Enforce rate limit (max 5 / hour per IP).
+    2. Optional hCaptcha verification.
+    3. Forward payload to Google Sheets Web App.
+    """
+    # ── 1. Rate limit ────────────────────────
+    forwarded = request.headers.get("X-Forwarded-For")
+    client_ip = forwarded.split(",")[0].strip() if forwarded else (
+        request.client.host if request.client else "unknown"
+    )
+    check_rate_limit(client_ip)
+    
+    # ── 2. CAPTCHA ───────────────────────────
+    token = payload.captcha_token or request.headers.get("X-Captcha-Token", "")
+    if HCAPTCHA_SECRET and not await verify_captcha(token):
+        raise HTTPException(status_code=400, detail="CAPTCHA verification failed. Please try again.")
+
+    # ── 3. Check Web App URL ─────────────────
+    if not GOOGLE_SHEET_WEBAPP_URL:
+        logger.warning("Feedback received but GOOGLE_SHEET_WEBAPP_URL is not set. Review: %s", payload.model_dump())
+        return {
+            "success": True,
+            "message": "Thank you! Your feedback has been submitted successfully (Demo Mode)."
+        }
+        
+    # ── 4. Forward to Google Sheets Web App ──
+    try:
+        post_data = {
+            "name": payload.name,
+            "role": payload.role or "",
+            "rating": payload.rating,
+            "message": payload.message,
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+        logger.info("Forwarding feedback to Google Sheet Web App...")
+        async with httpx.AsyncClient(timeout=10) as client:
+            resp = await client.post(GOOGLE_SHEET_WEBAPP_URL, json=post_data)
+            if resp.status_code in (200, 201):
+                logger.info("Feedback forwarded successfully.")
+                return {
+                    "success": True,
+                    "message": "Thank you! Your feedback has been submitted and is pending administrator approval."
+                }
+            else:
+                logger.error("Google Sheet rejected feedback. Status: %d, Response: %s", resp.status_code, resp.text)
+                raise HTTPException(status_code=502, detail="Failed to save feedback. Please try again later.")
+    except Exception as e:
+        logger.error("Failed to forward feedback to Google Sheet: %s", e)
+        raise HTTPException(status_code=500, detail="Internal server error while saving feedback. Please try again later.")
+
 @app.get("/api/health", tags=["System"])
 def health():
     """Health check."""
@@ -437,7 +775,10 @@ def health():
         "status":  "ok",
         "service": "NorthStar API",
         "version": "2.0.0",
-        "smtp_configured": bool(SMTP_USER and SMTP_PASS),
+        "primary_provider": PRIMARY_PROVIDER,
+        "resend_configured": bool(RESEND_API_KEY),
+        "sendgrid_configured": bool(SENDGRID_API_KEY),
+        "email_configured": bool(RESEND_API_KEY or SENDGRID_API_KEY),
         "captcha_enabled": bool(HCAPTCHA_SECRET and HCAPTCHA_SITEKEY),
         "captcha_sitekey": HCAPTCHA_SITEKEY,
     }

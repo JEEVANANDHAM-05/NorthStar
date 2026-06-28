@@ -1,26 +1,22 @@
 /* ============================================
   TESTIMONIALS CAROUSEL — NorthStar
+  Refactored to support dynamic DOM rendering
    ============================================ */
 
-(function () {
+window.initTestimonialsCarousel = function () {
   const track = document.getElementById('testimonials-track');
-  if (!track) return;
+  const carousel = document.getElementById('testimonials-carousel');
+  if (!track || !carousel) return;
 
   const slides = track.querySelectorAll('.testimonial-slide');
-  const dots   = document.querySelectorAll('.carousel-dot');
-  let current  = 0;
-  let autoPlay;
-  const total  = slides.length;
+  const dots = document.querySelectorAll('.carousel-dot');
+  const total = slides.length;
+  if (total === 0) return;
 
-  function goTo(index) {
-    current = (index + total) % total;
-    track.style.transform = `translateX(-${current * 100}%)`;
-    dots.forEach((dot, i) => {
-      dot.classList.toggle('active', i === current);
-      dot.setAttribute('aria-current', i === current ? 'true' : 'false');
-    });
-    document.getElementById('testimonials-carousel')?.setAttribute('aria-label',
-      `Client testimonials carousel, slide ${current + 1} of ${total}`);
+  let current = 0;
+  
+  if (window.carouselAutoPlayInterval) {
+    clearInterval(window.carouselAutoPlayInterval);
   }
 
   function next() { goTo(current + 1); }
@@ -28,50 +24,102 @@
 
   function startAutoPlay() {
     stopAutoPlay();
-    autoPlay = setInterval(next, 5000);
+    window.carouselAutoPlayInterval = setInterval(next, 5000);
   }
 
   function stopAutoPlay() {
-    clearInterval(autoPlay);
+    if (window.carouselAutoPlayInterval) {
+      clearInterval(window.carouselAutoPlayInterval);
+    }
   }
 
-  // Dot click
+  // Clone and replace dots to clean up old event listeners
   dots.forEach((dot, i) => {
-    dot.addEventListener('click', () => { goTo(i); startAutoPlay(); });
-    dot.setAttribute('tabindex', '0');
-    dot.addEventListener('keydown', (e) => {
+    const newDot = dot.cloneNode(true);
+    dot.parentNode.replaceChild(newDot, dot);
+    
+    newDot.addEventListener('click', () => { goTo(i); startAutoPlay(); });
+    newDot.setAttribute('tabindex', '0');
+    newDot.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); goTo(i); startAutoPlay(); }
     });
   });
 
-  // Keyboard navigation
-  const carousel = document.getElementById('testimonials-carousel');
-  carousel?.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowLeft') { prev(); startAutoPlay(); }
-    if (e.key === 'ArrowRight') { next(); startAutoPlay(); }
-  });
+  // Re-query the dots list after replacement to keep states correct
+  const updatedDots = document.querySelectorAll('.carousel-dot');
+  
+  function updateDotStates(index) {
+    updatedDots.forEach((dot, i) => {
+      dot.classList.toggle('active', i === index);
+      dot.setAttribute('aria-current', i === index ? 'true' : 'false');
+    });
+  }
 
-  // Pause on hover / focus
-  carousel?.addEventListener('mouseenter', stopAutoPlay);
-  carousel?.addEventListener('mouseleave', startAutoPlay);
-  carousel?.addEventListener('focusin',  stopAutoPlay);
-  carousel?.addEventListener('focusout', startAutoPlay);
+  function goTo(index) {
+    current = (index + total) % total;
+    track.style.transform = `translateX(-${current * 100}%)`;
+    updateDotStates(current);
+    carousel.setAttribute('aria-label', `Client testimonials carousel, slide ${current + 1} of ${total}`);
+  }
 
-  // Touch / swipe support
-  let touchStartX = 0;
-  carousel?.addEventListener('touchstart', (e) => {
-    touchStartX = e.changedTouches[0].screenX;
-  }, { passive: true });
-  carousel?.addEventListener('touchend', (e) => {
-    const diff = touchStartX - e.changedTouches[0].screenX;
-    if (Math.abs(diff) > 50) { diff > 0 ? next() : prev(); startAutoPlay(); }
-  }, { passive: true });
+  // Clone and replace next/prev buttons to clean up old event listeners
+  const prevBtn = document.getElementById('prev-btn');
+  const nextBtn = document.getElementById('next-btn');
+  if (prevBtn) {
+    const newPrevBtn = prevBtn.cloneNode(true);
+    prevBtn.parentNode.replaceChild(newPrevBtn, prevBtn);
+    newPrevBtn.addEventListener('click', () => { prev(); startAutoPlay(); });
+  }
+  if (nextBtn) {
+    const newNextBtn = nextBtn.cloneNode(true);
+    nextBtn.parentNode.replaceChild(newNextBtn, nextBtn);
+    newNextBtn.addEventListener('click', () => { next(); startAutoPlay(); });
+  }
 
-  // Init
-  goTo(0);
-  startAutoPlay();
+  // Setup carousel event listeners once
+  if (!carousel.dataset.listenersAttached) {
+    carousel.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') {
+        window.carouselPrev();
+      }
+      if (e.key === 'ArrowRight') {
+        window.carouselNext();
+      }
+    });
 
-  // Expose for HTML onclick handlers
+    carousel.addEventListener('mouseenter', () => window.carouselStopAutoPlay());
+    carousel.addEventListener('mouseleave', () => window.carouselStartAutoPlay());
+    carousel.addEventListener('focusin', () => window.carouselStopAutoPlay());
+    carousel.addEventListener('focusout', () => window.carouselStartAutoPlay());
+
+    let touchStartX = 0;
+    carousel.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+    carousel.addEventListener('touchend', (e) => {
+      const diff = touchStartX - e.changedTouches[0].screenX;
+      if (Math.abs(diff) > 50) { 
+        diff > 0 ? window.carouselNext() : window.carouselPrev(); 
+      }
+    }, { passive: true });
+
+    carousel.dataset.listenersAttached = 'true';
+  }
+
+  // Expose navigation functions globally
   window.carouselNext = () => { next(); startAutoPlay(); };
   window.carouselPrev = () => { prev(); startAutoPlay(); };
-})();
+  window.carouselStartAutoPlay = startAutoPlay;
+  window.carouselStopAutoPlay = stopAutoPlay;
+
+  // Initial call
+  goTo(0);
+  startAutoPlay();
+};
+
+// Auto-run if elements are statically present (fallback / standard page load)
+document.addEventListener('DOMContentLoaded', () => {
+  if (document.querySelectorAll('.testimonial-slide').length > 0) {
+    window.initTestimonialsCarousel();
+  }
+});
