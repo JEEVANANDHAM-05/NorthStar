@@ -639,7 +639,7 @@ async def refresh_feedback_cache():
     
     try:
         logger.info("Fetching fresh feedback from Google Sheet Web App...")
-        async with httpx.AsyncClient(timeout=10) as client:
+        async with httpx.AsyncClient(timeout=10, follow_redirects=True) as client:
             resp = await client.get(GOOGLE_SHEET_WEBAPP_URL)
             if resp.status_code == 200:
                 resp_json = resp.json()
@@ -753,7 +753,7 @@ async def submit_feedback(
             "timestamp": datetime.now(timezone.utc).isoformat()
         }
         logger.info("Forwarding feedback to Google Sheet Web App...")
-        async with httpx.AsyncClient(timeout=10) as client:
+        async with httpx.AsyncClient(timeout=10, follow_redirects=True) as client:
             resp = await client.post(GOOGLE_SHEET_WEBAPP_URL, json=post_data)
             if resp.status_code in (200, 201):
                 logger.info("Feedback forwarded successfully.")

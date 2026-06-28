@@ -2808,7 +2808,7 @@ input:checked+.toggle-slider::before {
   background: none !important;
   border: none !important;
   cursor: pointer;
-  color: var(--border); /* Gray initially */
+  color: #cbd5e1; /* Visible light grey initially (slate-300) */
   transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.15s ease;
   padding: 0;
   outline: none;
