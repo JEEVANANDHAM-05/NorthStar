@@ -753,8 +753,19 @@ async def submit_feedback(
             "timestamp": datetime.now(timezone.utc).isoformat()
         }
         logger.info("Forwarding feedback to Google Sheet Web App...")
-        async with httpx.AsyncClient(timeout=10, follow_redirects=True) as client:
-            resp = await client.post(GOOGLE_SHEET_WEBAPP_URL, json=post_data)
+        async with httpx.AsyncClient(timeout=10) as client:
+            # Disable automatic redirect following to capture Google's 302 Found response.
+            # This allows us to manually perform a new POST request to the redirected URL,
+            # ensuring that the POST method and payload are preserved (automatic redirects
+            # would convert the request to a GET and strip the body).
+            resp = await client.post(GOOGLE_SHEET_WEBAPP_URL, json=post_data, follow_redirects=False)
+            
+            if resp.status_code == 302:
+                redirect_url = resp.headers.get("Location")
+                if redirect_url:
+                    logger.info("Following Google Apps Script 302 redirect manually to: %s", redirect_url)
+                    resp = await client.post(redirect_url, json=post_data)
+                    
             if resp.status_code in (200, 201):
                 logger.info("Feedback forwarded successfully.")
                 return {
