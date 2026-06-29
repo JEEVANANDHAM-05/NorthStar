@@ -63,7 +63,7 @@ HCAPTCHA_SITEKEY = os.getenv("HCAPTCHA_SITEKEY", "")
 HCAPTCHA_VERIFY  = "https://hcaptcha.com/siteverify"
 
 # Google Sheets Web App URL for Customer Feedback Integration
-GOOGLE_SHEET_WEBAPP_URL = os.getenv("GOOGLE_SHEET_WEBAPP_URL", "").strip()
+GOOGLE_SHEET_WEBAPP_URL = os.getenv("GOOGLE_SHEET_WEBAPP_URL", "").strip().strip("'\"")
 
 
 
@@ -760,8 +760,8 @@ async def submit_feedback(
             if resp.status_code == 302:
                 redirect_url = resp.headers.get("Location")
                 if redirect_url:
-                    logger.info("Following Google Apps Script 302 redirect manually to: %s", redirect_url)
-                    resp = await client.post(redirect_url, json=post_data)
+                    logger.info("Following Google Apps Script 302 redirect manually via GET to: %s", redirect_url)
+                    resp = await client.get(redirect_url, follow_redirects=True)
                     
             if resp.status_code in (200, 201):
                 logger.info("Feedback forwarded successfully.")
@@ -773,8 +773,8 @@ async def submit_feedback(
                 logger.error("Google Sheet rejected feedback. Status: %d, Response: %s", resp.status_code, resp.text)
                 raise HTTPException(status_code=502, detail="Failed to save feedback. Please try again later.")
     except Exception as e:
-        logger.error("Failed to forward feedback to Google Sheet: %s", e)
-        raise HTTPException(status_code=500, detail="Internal server error while saving feedback. Please try again later.")
+        logger.error("Failed to forward feedback to Google Sheet: %s", e, exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Internal server error while saving feedback: {str(e)}")
 
 @app.get("/api/health", tags=["System"])
 def health():
