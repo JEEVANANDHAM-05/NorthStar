@@ -718,64 +718,95 @@ async def submit_feedback(
     request: Request,
 ):
     """
-    Submit user feedback.
-    1. Enforce rate limit (max 5 / hour per IP).
-    2. Optional hCaptcha verification.
-    3. Forward payload to Google Sheets Web App.
+    Submit feedback to Google Apps Script.
     """
-    # ── 1. Rate limit ────────────────────────
+
+    # -----------------------------
+    # 1. Rate limiting
+    # -----------------------------
     forwarded = request.headers.get("X-Forwarded-For")
-    client_ip = forwarded.split(",")[0].strip() if forwarded else (
-        request.client.host if request.client else "unknown"
+    client_ip = (
+        forwarded.split(",")[0].strip()
+        if forwarded
+        else (request.client.host if request.client else "unknown")
     )
+
     check_rate_limit(client_ip)
-    
-    # ── 2. CAPTCHA (Disabled for reviews since the modal lacks a captcha widget) ──
 
-    # ── 3. Check Web App URL ─────────────────
+    # -----------------------------
+    # 2. Check URL
+    # -----------------------------
     if not GOOGLE_SHEET_WEBAPP_URL:
-        logger.warning("Feedback received but GOOGLE_SHEET_WEBAPP_URL is not set. Review: %s", payload.model_dump())
-        return {
-            "success": True,
-            "message": "Thank you! Your feedback has been submitted successfully (Demo Mode)."
-        }
-        
-    # ── 4. Forward to Google Sheets Web App ──
-    try:
-        post_data = {
-            "name": payload.name,
-            "role": payload.role or "",
-            "rating": payload.rating,
-            "message": payload.message,
-            "timestamp": datetime.now(timezone.utc).isoformat()
-        }
-        logger.info("Forwarding feedback to Google Sheet Web App...")
-        async with httpx.AsyncClient(timeout=10) as client:
-            # Disable automatic redirect following to capture Google's 302 Found response.
-            # This allows us to manually perform a new POST request to the redirected URL,
-            # ensuring that the POST method and payload are preserved (automatic redirects
-            # would convert the request to a GET and strip the body).
-            resp = await client.post(GOOGLE_SHEET_WEBAPP_URL, json=post_data, follow_redirects=False)
-            
-            if resp.status_code == 302:
-                redirect_url = resp.headers.get("Location")
-                if redirect_url:
-                    logger.info("Following Google Apps Script 302 redirect manually via GET to: %s", redirect_url)
-                    resp = await client.get(redirect_url, follow_redirects=True)
-                    
-            if resp.status_code in (200, 201):
-                logger.info("Feedback forwarded successfully.")
-                return {
-                    "success": True,
-                    "message": "Thank you! Your feedback has been submitted and is pending administrator approval."
-                }
-            else:
-                logger.error("Google Sheet rejected feedback. Status: %d, Response: %s", resp.status_code, resp.text)
-                raise HTTPException(status_code=502, detail="Failed to save feedback. Please try again later.")
-    except Exception as e:
-        logger.error("Failed to forward feedback to Google Sheet: %s", e, exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Internal server error while saving feedback: {str(e)}")
+        logger.error("GOOGLE_SHEET_WEBAPP_URL is NOT configured!")
+        raise HTTPException(
+            status_code=500,
+            detail="Google Sheet Web App URL is missing."
+        )
 
+    logger.info("=" * 70)
+    logger.info("Starting feedback submission")
+    logger.info("Google Apps Script URL: %s", GOOGLE_SHEET_WEBAPP_URL)
+
+    # -----------------------------
+    # 3. Payload
+    # -----------------------------
+    post_data = {
+        "name": payload.name,
+        "role": payload.role or "",
+        "rating": payload.rating,
+        "message": payload.message,
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    }
+
+    logger.info("Payload:")
+    logger.info(post_data)
+
+    try:
+        async with httpx.AsyncClient(
+            timeout=20,
+            follow_redirects=True
+        ) as client:
+
+            logger.info("Sending POST request...")
+
+            # Send as form data (recommended for Apps Script)
+            response = await client.post(
+                GOOGLE_SHEET_WEBAPP_URL,
+                data=post_data
+            )
+
+            logger.info("=" * 40)
+            logger.info("RESPONSE RECEIVED")
+            logger.info("Status Code: %s", response.status_code)
+            logger.info("Final URL: %s", response.url)
+            logger.info("Headers: %s", dict(response.headers))
+            logger.info("Body:\n%s", response.text)
+            logger.info("=" * 40)
+
+            if response.status_code != 200:
+                raise HTTPException(
+                    status_code=502,
+                    detail=f"Google returned {response.status_code}"
+                )
+
+            return {
+                "success": True,
+                "message": "Feedback submitted successfully."
+            }
+
+    except httpx.RequestError as e:
+        logger.exception("HTTPX Request Error")
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )
+
+    except Exception as e:
+        logger.exception("Unexpected Error")
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )
 @app.get("/api/health", tags=["System"])
 def health():
     """Health check."""
