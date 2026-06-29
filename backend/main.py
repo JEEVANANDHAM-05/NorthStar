@@ -330,7 +330,7 @@ def _build_html_email(e: dict) -> str:
           <td style="background:#F5F3EF;padding:16px 32px;text-align:center;
                      border-top:1px solid #E7E3DC;">
             <p style="margin:0;font-size:12px;color:#8D96A3;">
-              NorthStar Financial Services · Pondicherry, India<br/>
+              NorthStar Groups · Pondicherry, India<br/>
               This is an automated notification. Do not reply to this email.
             </p>
           </td>
@@ -394,7 +394,7 @@ def _build_user_html_email(e: dict) -> str:
           <td style="background:#F5F3EF;padding:16px 32px;text-align:center;
                      border-top:1px solid #E7E3DC;">
             <p style="margin:0;font-size:12px;color:#8D96A3;">
-              NorthStar Financial Services · Pondicherry, India<br/>
+              NorthStar Groups · Pondicherry, India<br/>
               <span style="font-style:italic;">Disclaimer: This is an auto-generated email confirmation. Please do not reply directly to this message.</span>
             </p>
           </td>
@@ -416,7 +416,7 @@ def send_via_resend(enquiry: dict) -> bool:
 
     # Use custom sender domain mail or fallback to admin mail
     raw_from = SENDER_EMAIL or ADMIN_EMAIL
-    from_email = f"NorthStar Contact <{raw_from}>" if "<" not in raw_from else raw_from
+    from_email = f"NorthStar Groups<{raw_from}>" if "<" not in raw_from else raw_from
 
     try:
         headers = {
@@ -446,7 +446,7 @@ def send_via_resend(enquiry: dict) -> bool:
             user_email = enquiry.get("email")
             if user_email:
                 user_payload = {
-                    "from": f"NorthStar Financial Services <{raw_from}>" if "<" not in raw_from else raw_from,
+                    "from": f"NorthStar Groups <{raw_from}>" if "<" not in raw_from else raw_from,
                     "to": [user_email],
                     "subject": f"[NorthStar] We have received your enquiry — {enquiry['enquiry_id']}",
                     "html": _build_user_html_email(enquiry),
@@ -539,35 +539,15 @@ def send_via_sendgrid(enquiry: dict) -> bool:
 
 
 def send_admin_email(enquiry: dict) -> None:
-    """Send email notifications via Resend or SendGrid with automatic failover."""
-    # Define primary and backup based on configuration
-    if PRIMARY_PROVIDER == "sendgrid":
-        providers = [
-            ("SendGrid", send_via_sendgrid),
-            ("Resend", send_via_resend)
-        ]
-    else:
-        providers = [
-            ("Resend", send_via_resend),
-            ("SendGrid", send_via_sendgrid)
-        ]
-
-    # Try each configured provider in order until one succeeds
-    sent_successfully = False
-    for name, send_func in providers:
-        try:
-            logger.info("Attempting to dispatch email via %s...", name)
-            if send_func(enquiry):
-                logger.info("Successfully dispatched email using %s.", name)
-                sent_successfully = True
-                break
-            else:
-                logger.warning("%s dispatch failed (limit reached, error, or not configured). Trying backup...", name)
-        except Exception as e:
-            logger.error("Error during %s dispatch: %s. Trying backup...", name, e)
-
-    if not sent_successfully:
-        logger.critical("All email providers failed! Enquiry notification %s was NOT sent.", enquiry["enquiry_id"])
+    """Send email notifications via Resend API."""
+    try:
+        logger.info("Attempting to dispatch email via Resend...")
+        if send_via_resend(enquiry):
+            logger.info("Successfully dispatched email using Resend.")
+        else:
+            logger.error("Resend dispatch failed (API error or not configured).")
+    except Exception as e:
+        logger.exception("Error during Resend dispatch: %s", e)
 
 
 # ─────────────────────────────────────────────
@@ -771,7 +751,7 @@ async def submit_feedback(
 
         return {
             "success": True,
-            "message": "Thank you! Your feedback has been submitted and is pending administrator approval.",
+            "message": "Thank you! Your feedback has been submitted successfully.",
         }
 
     except httpx.RequestError as exc:
