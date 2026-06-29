@@ -718,95 +718,76 @@ async def submit_feedback(
     request: Request,
 ):
     """
-    Submit feedback to Google Apps Script.
+    Submit user feedback to the Google Sheets Web App.
     """
 
-    # -----------------------------
-    # 1. Rate limiting
-    # -----------------------------
+    # Rate limiting
     forwarded = request.headers.get("X-Forwarded-For")
     client_ip = (
         forwarded.split(",")[0].strip()
         if forwarded
         else (request.client.host if request.client else "unknown")
     )
-
     check_rate_limit(client_ip)
 
-    # -----------------------------
-    # 2. Check URL
-    # -----------------------------
+    # Ensure Web App URL is configured
     if not GOOGLE_SHEET_WEBAPP_URL:
-        logger.error("GOOGLE_SHEET_WEBAPP_URL is NOT configured!")
+        logger.error("GOOGLE_SHEET_WEBAPP_URL is not configured.")
         raise HTTPException(
             status_code=500,
-            detail="Google Sheet Web App URL is missing."
+            detail="Feedback service is unavailable."
         )
 
-    logger.info("=" * 70)
-    logger.info("Starting feedback submission")
-    logger.info("Google Apps Script URL: %s", GOOGLE_SHEET_WEBAPP_URL)
-
-    # -----------------------------
-    # 3. Payload
-    # -----------------------------
+    # Prepare payload
     post_data = {
         "name": payload.name,
         "role": payload.role or "",
         "rating": payload.rating,
         "message": payload.message,
-        "timestamp": datetime.now(timezone.utc).isoformat()
+        "timestamp": datetime.now(timezone.utc).isoformat(),
     }
-
-    logger.info("Payload:")
-    logger.info(post_data)
 
     try:
         async with httpx.AsyncClient(
-            timeout=20,
-            follow_redirects=True
+            timeout=10,
+            follow_redirects=True,
         ) as client:
 
-            logger.info("Sending POST request...")
-
-            # Send as form data (recommended for Apps Script)
             response = await client.post(
                 GOOGLE_SHEET_WEBAPP_URL,
-                data=post_data
+                data=post_data,      # Google Apps Script works best with form data
             )
 
-            logger.info("=" * 40)
-            logger.info("RESPONSE RECEIVED")
-            logger.info("Status Code: %s", response.status_code)
-            logger.info("Final URL: %s", response.url)
-            logger.info("Headers: %s", dict(response.headers))
-            logger.info("Body:\n%s", response.text)
-            logger.info("=" * 40)
+        if response.status_code != 200:
+            logger.error(
+                "Google Apps Script returned %s: %s",
+                response.status_code,
+                response.text,
+            )
+            raise HTTPException(
+                status_code=502,
+                detail="Failed to submit feedback. Please try again later."
+            )
 
-            if response.status_code != 200:
-                raise HTTPException(
-                    status_code=502,
-                    detail=f"Google returned {response.status_code}"
-                )
+        return {
+            "success": True,
+            "message": "Thank you! Your feedback has been submitted and is pending administrator approval.",
+        }
 
-            return {
-                "success": True,
-                "message": "Feedback submitted successfully."
-            }
+    except httpx.RequestError as exc:
+        logger.exception("Unable to reach Google Apps Script.")
+        raise HTTPException(
+            status_code=503,
+            detail="Feedback service is temporarily unavailable."
+        ) from exc
 
-    except httpx.RequestError as e:
-        logger.exception("HTTPX Request Error")
+    except Exception as exc:
+        logger.exception("Unexpected error while submitting feedback.")
         raise HTTPException(
             status_code=500,
-            detail=str(e)
-        )
-
-    except Exception as e:
-        logger.exception("Unexpected Error")
-        raise HTTPException(
-            status_code=500,
-            detail=str(e)
-        )
+            detail="An unexpected error occurred while submitting feedback."
+        ) from exc
+        
 @app.get("/api/health", tags=["System"])
 def health():
     """Health check."""
