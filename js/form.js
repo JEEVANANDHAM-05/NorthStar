@@ -86,7 +86,7 @@
       return /^[6-9]\d{9}$/.test(val) ? null : 'Please enter a valid 10-digit Indian mobile number.';
     },
     email(val) {
-      if (!val.trim()) return null; // optional
+      if (!val.trim()) return 'Please enter your email address.';
       return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val.trim())
         ? null
         : 'Please enter a valid email address.';

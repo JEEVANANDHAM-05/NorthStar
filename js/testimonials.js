@@ -34,11 +34,19 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function renderTestimonials(testimonials) {
+    const carouselNav = document.querySelector('.carousel-nav');
     if (!track || !testimonials || testimonials.length === 0) {
       if (track) {
-        track.innerHTML = '<div style="text-align: center; padding: var(--sp-10) 0; width: 100%;">No reviews available yet.</div>';
+        track.innerHTML = '<div style="text-align: center; padding: var(--sp-10) 0; width: 100%; color: var(--text-secondary);">No reviews available yet.</div>';
+      }
+      if (carouselNav) {
+        carouselNav.style.display = 'none';
       }
       return;
+    }
+
+    if (carouselNav) {
+      carouselNav.style.display = 'flex';
     }
 
     track.innerHTML = '';

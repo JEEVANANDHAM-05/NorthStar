@@ -121,7 +121,7 @@ async def verify_captcha(token: str) -> bool:
 class EnquiryRequest(BaseModel):
     name:           str
     phone:          str
-    email:          Optional[str] = None
+    email:          str
     service:        str
     message:        Optional[str] = None
     captcha_token:  Optional[str] = None   # hCaptcha response token
@@ -148,15 +148,15 @@ class EnquiryRequest(BaseModel):
 
     @field_validator("email")
     @classmethod
-    def validate_email(cls, v: Optional[str]) -> Optional[str]:
-        if v and v.strip():
-            v = v.strip().lower()
-            if not re.match(r"^[^\s@]+@[^\s@]+\.[^\s@]+$", v):
-                raise ValueError("Please enter a valid email address.")
-            if len(v) > 254:
-                raise ValueError("Email address is too long.")
-            return v
-        return None
+    def validate_email(cls, v: str) -> str:
+        v = v.strip().lower()
+        if not v:
+            raise ValueError("Please enter your email address.")
+        if not re.match(r"^[^\s@]+@[^\s@]+\.[^\s@]+$", v):
+            raise ValueError("Please enter a valid email address.")
+        if len(v) > 254:
+            raise ValueError("Email address is too long.")
+        return v
 
     @field_validator("service")
     @classmethod
@@ -553,44 +553,7 @@ def send_admin_email(enquiry: dict) -> None:
 # ─────────────────────────────────────────────
 # Testimonials & Feedback Cache / Fallback System
 # ─────────────────────────────────────────────
-DEFAULT_TESTIMONIALS = [
-    {
-        "name": "Rajesh Kumar",
-        "role": "Salaried Professional, Mumbai",
-        "rating": 5,
-        "message": "Filed my ITR within a day. The team explained every deduction clearly. Highly recommended for anyone who finds taxes confusing."
-    },
-    {
-        "name": "Priya Sharma",
-        "role": "Freelancer, Bangalore",
-        "rating": 5,
-        "message": "I had multiple income sources and was worried about filing errors. NorthStar handled everything perfectly and even helped me save more tax than I expected."
-    },
-    {
-        "name": "Anil Mehta",
-        "role": "Small Business Owner, Delhi",
-        "rating": 5,
-        "message": "GST filing used to be a monthly headache. Now I just share my documents and they handle the rest. Very professional and always on time."
-    },
-    {
-        "name": "Sunita Joshi",
-        "role": "Business Owner, Pune",
-        "rating": 5,
-        "message": "I received a notice from the IT department and was panicking. NorthStar resolved it within 48 hours. Their expertise is unmatched."
-    },
-    {
-        "name": "Vikram Nair",
-        "role": "IT Professional, Hyderabad",
-        "rating": 4,
-        "message": "Best tax filing experience. The dashboard makes it so easy to track the status. Refund came in 3 weeks. Will definitely use again!"
-    },
-    {
-        "name": "Neha Verma",
-        "role": "First-time Taxpayer, Chennai",
-        "rating": 5,
-        "message": "As a first-time taxpayer I was completely lost. The team guided me step by step. Super patient and professional. Highly recommended!"
-    }
-]
+DEFAULT_TESTIMONIALS = []
 
 CACHE_FILE = os.path.join(os.path.dirname(__file__), "feedback_cache.json")
 _feedback_cache = {"last_updated": None, "data": DEFAULT_TESTIMONIALS}
@@ -668,28 +631,9 @@ async def startup_event():
 async def get_feedback(background_tasks: BackgroundTasks):
     """
     Get all approved testimonials.
-    If the cache is empty or older than 10 minutes, triggers a background refresh.
+    Always returns empty as requested.
     """
-    global _feedback_cache
-    
-    cache_needs_refresh = False
-    if GOOGLE_SHEET_WEBAPP_URL:
-        if not _feedback_cache.get("last_updated"):
-            cache_needs_refresh = True
-        else:
-            try:
-                last_updated = datetime.fromisoformat(_feedback_cache["last_updated"])
-                now = datetime.now(timezone.utc)
-                if (now - last_updated).total_seconds() > 600: # 10 minutes
-                    cache_needs_refresh = True
-            except Exception:
-                cache_needs_refresh = True
-                
-    if cache_needs_refresh:
-        logger.info("Triggering background feedback cache refresh...")
-        background_tasks.add_task(refresh_feedback_cache)
-        
-    return _feedback_cache["data"]
+    return []
 
 
 @app.post("/api/feedback", tags=["Feedback"])
