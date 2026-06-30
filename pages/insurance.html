@@ -1,51 +1,167 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Insurance Services & Protection Planning — NorthStar</title>
-  <meta name="description" content="Get expert-guided, unbiased advice on Life, Health, and General insurance. Optimize coverages and save tax under Sec 80C & 80D." />
+  <meta name="description"
+    content="Get expert-guided, unbiased advice on Life, Health, and General insurance. Optimize coverages and save tax under Sec 80C & 80D." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&display=swap"
+    rel="stylesheet" />
   <link rel="stylesheet" href="../css/variables.css?v=1.2" />
   <link rel="stylesheet" href="../css/reset.css?v=1.2" />
   <link rel="stylesheet" href="../css/main.css?v=1.2" />
   <style>
-    .services-hero { background: linear-gradient(135deg, var(--bg-white) 0%, var(--primary-light) 100%); padding: calc(var(--nav-height) + var(--sp-16)) 0 var(--sp-16); text-align: center; }
-    .service-detail { padding: var(--sp-16) 0; border-bottom: 1px solid var(--border); }
-    .service-detail:last-child { border-bottom: none; }
-    .service-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-12); align-items: start; }
-    .service-detail:nth-child(even) .service-detail-grid { direction: rtl; }
-    .service-detail:nth-child(even) .service-detail-grid > * { direction: ltr; }
-    .service-detail-icon { width: 80px; height: 80px; border-radius: var(--radius-xl); display: flex; align-items: center; justify-content: center; margin-bottom: var(--sp-6); }
-    .service-benefits { list-style: none; margin: var(--sp-5) 0; }
-    .service-benefits li { display: flex; align-items: flex-start; gap: var(--sp-3); margin-bottom: var(--sp-3); font-size: var(--text-sm); }
-    .service-benefits li svg { color: var(--success); flex-shrink: 0; margin-top: 2px; }
-    .docs-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: var(--sp-3); margin-top: var(--sp-4); }
-    .doc-tag { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: var(--sp-2) var(--sp-3); font-size: var(--text-sm); display: flex; align-items: center; gap: var(--sp-2); }
-    @media (max-width: 1023px) { .service-detail-grid { grid-template-columns: 1fr; } .service-detail:nth-child(even) .service-detail-grid { direction: ltr; } }
-    @media (max-width: 767px) { .services-hero { padding: calc(var(--nav-height) + var(--sp-10)) 0 var(--sp-10); } .service-detail { padding: var(--sp-10) 0; } .docs-grid { grid-template-columns: 1fr; } .service-detail-icon { width: 64px; height: 64px; } }
-    @media (max-width: 480px) { .services-hero { padding: calc(var(--nav-height) + var(--sp-6)) 0 var(--sp-8); } .service-detail { padding: var(--sp-8) 0; } }
+    .services-hero {
+      background: linear-gradient(135deg, var(--bg-white) 0%, var(--primary-light) 100%);
+      padding: calc(var(--nav-height) + var(--sp-16)) 0 var(--sp-16);
+      text-align: center;
+    }
+
+    .service-detail {
+      padding: var(--sp-16) 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .service-detail:last-child {
+      border-bottom: none;
+    }
+
+    .service-detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--sp-12);
+      align-items: start;
+    }
+
+    .service-detail:nth-child(even) .service-detail-grid {
+      direction: rtl;
+    }
+
+    .service-detail:nth-child(even) .service-detail-grid>* {
+      direction: ltr;
+    }
+
+    .service-detail-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: var(--radius-xl);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: var(--sp-6);
+    }
+
+    .service-benefits {
+      list-style: none;
+      margin: var(--sp-5) 0;
+    }
+
+    .service-benefits li {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--sp-3);
+      margin-bottom: var(--sp-3);
+      font-size: var(--text-sm);
+    }
+
+    .service-benefits li svg {
+      color: var(--success);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .docs-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--sp-3);
+      margin-top: var(--sp-4);
+    }
+
+    .doc-tag {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: var(--sp-2) var(--sp-3);
+      font-size: var(--text-sm);
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+    }
+
+    @media (max-width: 1023px) {
+      .service-detail-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .service-detail:nth-child(even) .service-detail-grid {
+        direction: ltr;
+      }
+    }
+
+    @media (max-width: 767px) {
+      .services-hero {
+        padding: calc(var(--nav-height) + var(--sp-10)) 0 var(--sp-10);
+      }
+
+      .service-detail {
+        padding: var(--sp-10) 0;
+      }
+
+      .docs-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .service-detail-icon {
+        width: 64px;
+        height: 64px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .services-hero {
+        padding: calc(var(--nav-height) + var(--sp-6)) 0 var(--sp-8);
+      }
+
+      .service-detail {
+        padding: var(--sp-8) 0;
+      }
+    }
   </style>
+  <script type="text/javascript">
+    (function (c, l, a, r, i, t, y) {
+      c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+      t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+      y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+    })(window, document, "clarity", "script", "xf7hijyryt");
+  </script>
 </head>
+
 <body>
   <!-- Navbar -->
   <nav class="navbar navbar-dark" id="navbar" role="navigation" aria-label="Main navigation">
-    <div class="container"><div class="navbar-inner">
-      <a href="../index.html" class="navbar-logo">
-        <img src="../assets/images/northstar-logo.png" alt="NorthStar Financial Services" class="navbar-logo-img" />
-      </a>
-      <ul class="navbar-nav" role="list">
-        <li><a href="../index.html#home" class="nav-link">Home</a></li>
-        <li><a href="services.html" class="nav-link active">Services</a></li>
-        <li><a href="about.html" class="nav-link">About</a></li>
-        <li><a href="../index.html#testimonials" class="nav-link">Testimonials</a></li>
-        <li><a href="../index.html#contact" class="nav-link">Contact</a></li>
-      </ul>
-      <div class="navbar-actions">
-        <a href="../index.html#contact" class="btn btn-primary btn-sm">Get Started</a>
+    <div class="container">
+      <div class="navbar-inner">
+        <a href="../index.html" class="navbar-logo">
+          <img src="../assets/images/northstar-logo.png" alt="NorthStar Financial Services" class="navbar-logo-img" />
+        </a>
+        <ul class="navbar-nav" role="list">
+          <li><a href="../index.html#home" class="nav-link">Home</a></li>
+          <li><a href="services.html" class="nav-link active">Services</a></li>
+          <li><a href="about.html" class="nav-link">About</a></li>
+          <li><a href="../index.html#testimonials" class="nav-link">Testimonials</a></li>
+          <li><a href="../index.html#contact" class="nav-link">Contact</a></li>
+        </ul>
+        <div class="navbar-actions">
+          <a href="../index.html#contact" class="btn btn-primary btn-sm">Get Started</a>
+        </div>
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu"
+          aria-expanded="false"><span></span><span></span><span></span></button>
       </div>
-      <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false"><span></span><span></span><span></span></button>
-    </div></div>
+    </div>
   </nav>
   <div class="mobile-menu" id="mobile-menu">
     <a href="../index.html#home" class="nav-link">Home</a>
@@ -62,15 +178,21 @@
     <section class="services-hero">
       <div class="container">
         <span class="section-tag">Insurance Planning</span>
-        <h1 class="section-title" style="margin-top: var(--sp-4); font-size: clamp(var(--text-3xl), 5vw, var(--text-5xl));">Insurance & Protection Planning</h1>
-        <p class="section-subtitle" style="margin-top: var(--sp-4);">Secure your family's future and business assets. Get unbiased comparison, integrated tax saving advising, and prompt claim settlement support under one roof.</p>
+        <h1 class="section-title"
+          style="margin-top: var(--sp-4); font-size: clamp(var(--text-3xl), 5vw, var(--text-5xl));">Insurance &
+          Protection Planning</h1>
+        <p class="section-subtitle" style="margin-top: var(--sp-4);">Secure your family's future and business assets.
+          Get unbiased comparison, integrated tax saving advising, and prompt claim settlement support under one roof.
+        </p>
       </div>
     </section>
 
     <!-- Service quick links -->
-    <div style="background: #fff; border-bottom: 1px solid var(--border); position: sticky; top: var(--nav-height); z-index: var(--z-sticky);">
+    <div
+      style="background: #fff; border-bottom: 1px solid var(--border); position: sticky; top: var(--nav-height); z-index: var(--z-sticky);">
       <div class="container" style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
-        <nav style="display: flex; gap: var(--sp-2); padding: var(--sp-3) 0; white-space: nowrap;" aria-label="Service sections">
+        <nav style="display: flex; gap: var(--sp-2); padding: var(--sp-3) 0; white-space: nowrap;"
+          aria-label="Service sections">
           <a href="#life-insurance" class="btn btn-ghost btn-sm">Life Insurance</a>
           <a href="#health-insurance" class="btn btn-ghost btn-sm">Health Insurance</a>
           <a href="#general-insurance" class="btn btn-ghost btn-sm">General & Asset Insurance</a>
@@ -85,33 +207,56 @@
         <div class="service-detail-grid">
           <div>
             <div class="service-detail-icon" style="background: var(--primary-light); color: var(--primary);">
-              <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+              <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"
+                aria-hidden="true">
+                <path
+                  d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
+              </svg>
             </div>
-            <h2 id="life-heading" style="font-size: var(--text-2xl); margin-bottom: var(--sp-4);">Life Insurance & Term Plans</h2>
-            <p style="color: var(--text-secondary); line-height: var(--lh-relaxed); margin-bottom: var(--sp-4);">Protect your family's lifestyle if the unexpected happens. We compare term insurance quotes from top Indian insurers to find plans with the highest claim settlement ratios, lowest premiums, and eligible Sec 80C deductions.</p>
-            <h3 style="font-size: var(--text-base); font-weight: var(--fw-semi); margin-bottom: var(--sp-3);">Our Focus:</h3>
+            <h2 id="life-heading" style="font-size: var(--text-2xl); margin-bottom: var(--sp-4);">Life Insurance & Term
+              Plans</h2>
+            <p style="color: var(--text-secondary); line-height: var(--lh-relaxed); margin-bottom: var(--sp-4);">Protect
+              your family's lifestyle if the unexpected happens. We compare term insurance quotes from top Indian
+              insurers to find plans with the highest claim settlement ratios, lowest premiums, and eligible Sec 80C
+              deductions.</p>
+            <h3 style="font-size: var(--text-base); font-weight: var(--fw-semi); margin-bottom: var(--sp-3);">Our Focus:
+            </h3>
             <ul class="service-benefits">
-              <li><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Pure Term Life Insurance plans</li>
-              <li><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Endowment & Money-back LIC policies</li>
-              <li><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Investment-linked wealth builder schemes (ULIPs)</li>
-              <li><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Section 80C tax relief advisory (up to ₹1.5L deduction)</li>
+              <li><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>Pure Term Life Insurance plans</li>
+              <li><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>Endowment & Money-back LIC policies</li>
+              <li><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>Investment-linked wealth builder schemes (ULIPs)</li>
+              <li><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>Section 80C tax relief advisory (up to ₹1.5L deduction)</li>
             </ul>
             <div style="display:flex; gap: var(--sp-3); flex-wrap: wrap; margin-top: var(--sp-6);">
-              <a href="../index.html#contact" class="btn btn-primary" onclick="setService('Insurance')">Get Unbiased Quote</a>
+              <a href="../index.html#contact" class="btn btn-primary" onclick="setService('Insurance')">Get Unbiased
+                Quote</a>
             </div>
           </div>
           <div>
             <div class="card" style="padding: var(--sp-6);">
-              <h3 style="font-size: var(--text-base); font-weight: var(--fw-semi); margin-bottom: var(--sp-4);">Details Needed</h3>
+              <h3 style="font-size: var(--text-base); font-weight: var(--fw-semi); margin-bottom: var(--sp-4);">Details
+                Needed</h3>
               <div class="docs-grid">
                 <div class="doc-tag">🪪 Identity Proof (PAN/Aadhaar)</div>
                 <div class="doc-tag">💼 Salary slips / Income returns</div>
                 <div class="doc-tag">📋 Age proof certificates</div>
                 <div class="doc-tag">🏥 Existing health details</div>
               </div>
-              <div style="margin-top: var(--sp-6); background: var(--primary-light); border-radius: var(--radius-md); padding: var(--sp-4);">
-                <div style="font-size: var(--text-sm); font-weight: var(--fw-semi); color: var(--primary); margin-bottom: var(--sp-2);">⚡ Quote analysis is free</div>
-                <div style="font-size: var(--text-xs); color: var(--text-secondary);">Comprehensive report comparing premium rates & features</div>
+              <div
+                style="margin-top: var(--sp-6); background: var(--primary-light); border-radius: var(--radius-md); padding: var(--sp-4);">
+                <div
+                  style="font-size: var(--text-sm); font-weight: var(--fw-semi); color: var(--primary); margin-bottom: var(--sp-2);">
+                  ⚡ Quote analysis is free</div>
+                <div style="font-size: var(--text-xs); color: var(--text-secondary);">Comprehensive report comparing
+                  premium rates & features</div>
               </div>
             </div>
           </div>
@@ -123,31 +268,52 @@
         <div class="service-detail-grid">
           <div>
             <div class="service-detail-icon" style="background: var(--secondary-light); color: var(--secondary);">
-              <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+              <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"
+                aria-hidden="true">
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+              </svg>
             </div>
-            <h2 id="health-heading" style="font-size: var(--text-2xl); margin-bottom: var(--sp-4);">Health & Family Floater Plans</h2>
-            <p style="color: var(--text-secondary); line-height: var(--lh-relaxed); margin-bottom: var(--sp-4);">Secure your savings from medical inflation. We evaluate family floater plans, individual policies, and critical illness riders, while maximizing deductions under Sec 80D for you and your parents.</p>
-            <h3 style="font-size: var(--text-base); font-weight: var(--fw-semi); margin-bottom: var(--sp-3);">We Advise On:</h3>
+            <h2 id="health-heading" style="font-size: var(--text-2xl); margin-bottom: var(--sp-4);">Health & Family
+              Floater Plans</h2>
+            <p style="color: var(--text-secondary); line-height: var(--lh-relaxed); margin-bottom: var(--sp-4);">Secure
+              your savings from medical inflation. We evaluate family floater plans, individual policies, and critical
+              illness riders, while maximizing deductions under Sec 80D for you and your parents.</p>
+            <h3 style="font-size: var(--text-base); font-weight: var(--fw-semi); margin-bottom: var(--sp-3);">We Advise
+              On:</h3>
             <ul class="service-benefits">
-              <li><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Cashless hospitalisation networks in your city</li>
-              <li><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Pre-existing disease coverage terms (waiting periods)</li>
-              <li><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Senior citizen health plans for dependent parents</li>
-              <li><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Section 80D tax deductions (up to ₹25k / ₹50k per year)</li>
+              <li><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>Cashless hospitalisation networks in your city</li>
+              <li><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>Pre-existing disease coverage terms (waiting periods)</li>
+              <li><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>Senior citizen health plans for dependent parents</li>
+              <li><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>Section 80D tax deductions (up to ₹25k / ₹50k per year)</li>
             </ul>
-            <a href="../index.html#contact" class="btn btn-primary" style="margin-top: var(--sp-6);">Request Medical Cover Quote</a>
+            <a href="../index.html#contact" class="btn btn-primary" style="margin-top: var(--sp-6);">Request Medical
+              Cover Quote</a>
           </div>
           <div>
             <div class="card" style="padding: var(--sp-6);">
-              <h3 style="font-size: var(--text-base); font-weight: var(--fw-semi); margin-bottom: var(--sp-4);">Key Inputs</h3>
+              <h3 style="font-size: var(--text-base); font-weight: var(--fw-semi); margin-bottom: var(--sp-4);">Key
+                Inputs</h3>
               <div class="docs-grid">
                 <div class="doc-tag">🏠 City of residence</div>
                 <div class="doc-tag">🎂 Age of members</div>
                 <div class="doc-tag">📋 Existing illnesses history</div>
                 <div class="doc-tag">🏦 Employer medical cover details</div>
               </div>
-              <div style="margin-top: var(--sp-6); background: var(--secondary-light); border-radius: var(--radius-md); padding: var(--sp-4);">
-                <div style="font-size: var(--text-sm); font-weight: var(--fw-semi); color: var(--secondary-dark); margin-bottom: var(--sp-2);">⚡ Advisory is free & unbiased</div>
-                <div style="font-size: var(--text-xs); color: var(--text-secondary);">We represent multiple insurers to give you objective choices</div>
+              <div
+                style="margin-top: var(--sp-6); background: var(--secondary-light); border-radius: var(--radius-md); padding: var(--sp-4);">
+                <div
+                  style="font-size: var(--text-sm); font-weight: var(--fw-semi); color: var(--secondary-dark); margin-bottom: var(--sp-2);">
+                  ⚡ Advisory is free & unbiased</div>
+                <div style="font-size: var(--text-xs); color: var(--text-secondary);">We represent multiple insurers to
+                  give you objective choices</div>
               </div>
             </div>
           </div>
@@ -159,33 +325,54 @@
         <div class="service-detail-grid">
           <div>
             <div class="service-detail-icon" style="background: var(--accent-light); color: var(--accent-dark);">
-              <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"
+                aria-hidden="true">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              </svg>
             </div>
-            <h2 id="general-heading" style="font-size: var(--text-2xl); margin-bottom: var(--sp-4);">General & Asset Protection</h2>
-            <p style="color: var(--text-secondary); line-height: var(--lh-relaxed); margin-bottom: var(--sp-4);">Protect your valuable assets. We provide quick vehicle renewal quotes, commercial property and shopkeeper protection, fire coverage, and student travel health insurance policies.</p>
-            <h3 style="font-size: var(--text-base); font-weight: var(--fw-semi); margin-bottom: var(--sp-3);">What we cover:</h3>
+            <h2 id="general-heading" style="font-size: var(--text-2xl); margin-bottom: var(--sp-4);">General & Asset
+              Protection</h2>
+            <p style="color: var(--text-secondary); line-height: var(--lh-relaxed); margin-bottom: var(--sp-4);">Protect
+              your valuable assets. We provide quick vehicle renewal quotes, commercial property and shopkeeper
+              protection, fire coverage, and student travel health insurance policies.</p>
+            <h3 style="font-size: var(--text-base); font-weight: var(--fw-semi); margin-bottom: var(--sp-3);">What we
+              cover:</h3>
             <ul class="service-benefits">
-              <li><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Four wheeler & Two wheeler comprehensive insurance</li>
-              <li><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Shopkeeper, commercial liability & fire coverage</li>
-              <li><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Home structure & contents protection policies</li>
-              <li><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Travel health insurance with global cash-less network</li>
+              <li><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>Four wheeler & Two wheeler comprehensive insurance</li>
+              <li><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>Shopkeeper, commercial liability & fire coverage</li>
+              <li><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>Home structure & contents protection policies</li>
+              <li><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>Travel health insurance with global cash-less network</li>
             </ul>
             <div style="display:flex; gap: var(--sp-3); flex-wrap: wrap; margin-top: var(--sp-6);">
-              <a href="../index.html#contact" class="btn btn-primary" onclick="setService('Insurance')">Get Asset Cover Quote</a>
+              <a href="../index.html#contact" class="btn btn-primary" onclick="setService('Insurance')">Get Asset Cover
+                Quote</a>
             </div>
           </div>
           <div>
             <div class="card" style="padding: var(--sp-6);">
-              <h3 style="font-size: var(--text-base); font-weight: var(--fw-semi); margin-bottom: var(--sp-4);">Documents Needed</h3>
+              <h3 style="font-size: var(--text-base); font-weight: var(--fw-semi); margin-bottom: var(--sp-4);">
+                Documents Needed</h3>
               <div class="docs-grid">
                 <div class="doc-tag">🚗 Previous RC copy (for vehicles)</div>
                 <div class="doc-tag">📄 Existing policy papers</div>
                 <div class="doc-tag">🏢 Shop registration details</div>
                 <div class="doc-tag">✈️ Flight itineraries (travel)</div>
               </div>
-              <div style="margin-top: var(--sp-6); background: var(--accent-light); border-radius: var(--radius-md); padding: var(--sp-4);">
-                <div style="font-size: var(--text-sm); font-weight: var(--fw-semi); color: var(--accent-dark); margin-bottom: var(--sp-2);">⚡ Quote analysis is free</div>
-                <div style="font-size: var(--text-xs); color: var(--text-secondary);">Unbiased multi-insurer premium evaluation report</div>
+              <div
+                style="margin-top: var(--sp-6); background: var(--accent-light); border-radius: var(--radius-md); padding: var(--sp-4);">
+                <div
+                  style="font-size: var(--text-sm); font-weight: var(--fw-semi); color: var(--accent-dark); margin-bottom: var(--sp-2);">
+                  ⚡ Quote analysis is free</div>
+                <div style="font-size: var(--text-xs); color: var(--text-secondary);">Unbiased multi-insurer premium
+                  evaluation report</div>
               </div>
             </div>
           </div>
@@ -196,14 +383,21 @@
 
     <!-- CTA -->
     <section class="section section-alt">
-      <div class="container"><div class="cta-banner"><div class="cta-banner-content">
-        <h2 class="cta-banner-title">Unsure of your insurance needs?</h2>
-        <p class="cta-banner-subtitle">Get a free protection review from a NorthStar expert. Align your plans with your tax-savings objectives.</p>
-        <div class="cta-banner-actions">
-          <a href="../index.html#contact" class="btn btn-white btn-lg">Schedule Free Review</a>
-          <a href="https://wa.me/919486409362" target="_blank" rel="noopener" class="btn btn-lg" style="background:rgba(255,255,255,0.15);color:#fff;border:2px solid rgba(255,255,255,0.4);">WhatsApp Us</a>
+      <div class="container">
+        <div class="cta-banner">
+          <div class="cta-banner-content">
+            <h2 class="cta-banner-title">Unsure of your insurance needs?</h2>
+            <p class="cta-banner-subtitle">Get a free protection review from a NorthStar expert. Align your plans with
+              your tax-savings objectives.</p>
+            <div class="cta-banner-actions">
+              <a href="../index.html#contact" class="btn btn-white btn-lg">Schedule Free Review</a>
+              <a href="https://wa.me/919486409362" target="_blank" rel="noopener" class="btn btn-lg"
+                style="background:rgba(255,255,255,0.15);color:#fff;border:2px solid rgba(255,255,255,0.4);">WhatsApp
+                Us</a>
+            </div>
+          </div>
         </div>
-      </div></div></div>
+      </div>
     </section>
   </main>
 
@@ -213,23 +407,39 @@
       <div class="footer-grid">
         <div class="footer-brand">
           <div class="footer-logo">
-            <img src="../assets/images/northstar-footer-logo.png" alt="NorthStar Financial Services" class="footer-logo-img" />
+            <img src="../assets/images/northstar-footer-logo.png" alt="NorthStar Financial Services"
+              class="footer-logo-img" />
           </div>
           <p class="footer-tagline">
             <span style="display: block; margin-bottom: var(--sp-2);">
               Expert-assisted tax filing for individuals and businesses.
             </span>
             <span style="display: block;">
-              Expert team <span style="margin: 0 10px; color: #fff;">|</span> maximum refunds <span style="margin: 0 10px; color: #fff;">|</span> complete compliance.
+              Expert team <span style="margin: 0 10px; color: #fff;">|</span> maximum refunds <span
+                style="margin: 0 10px; color: #fff;">|</span> complete compliance.
             </span>
           </p>
           <div class="footer-social" aria-label="Social media links">
-            <a href="https://wa.me/919486409362" target="_blank" rel="noopener" class="social-link" aria-label="WhatsApp">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            <a href="https://wa.me/919486409362" target="_blank" rel="noopener" class="social-link"
+              aria-label="WhatsApp">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+              </svg>
             </a>
-            <a href="#" class="social-link" aria-label="LinkedIn"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+            <a href="#" class="social-link" aria-label="LinkedIn"><svg width="18" height="18" fill="none"
+                stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z" />
+                <rect x="2" y="9" width="4" height="12" />
+                <circle cx="4" cy="4" r="2" />
+              </svg></a>
 
-            <a href="#" class="social-link" aria-label="Instagram"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+            <a href="#" class="social-link" aria-label="Instagram"><svg width="18" height="18" fill="none"
+                stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="2" y="2" width="20" height="20" rx="5" />
+                <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z" />
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+              </svg></a>
           </div>
         </div>
         <div>
@@ -256,36 +466,64 @@
         <div>
           <h3 class="footer-heading">Contact</h3>
           <div class="footer-contact-item">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 .18h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/></svg>
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+              aria-hidden="true">
+              <path
+                d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 .18h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z" />
+            </svg>
             <a href="tel:+919486409362" style="color: rgba(255,255,255,0.6);">+91 94864 09362</a>
           </div>
           <div class="footer-contact-item">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-            <a href="mailto:workwithnorthstar@gmail.com" style="color: rgba(255,255,255,0.6);">workwithnorthstar@gmail.com</a>
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+              aria-hidden="true">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+              <polyline points="22,6 12,13 2,6" />
+            </svg>
+            <a href="mailto:workwithnorthstar@gmail.com"
+              style="color: rgba(255,255,255,0.6);">workwithnorthstar@gmail.com</a>
           </div>
           <div class="footer-contact-item">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+              aria-hidden="true">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
             <span>Pondicherry, India</span>
           </div>
           <div class="footer-contact-item">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+              aria-hidden="true">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12,6 12,12 16,14" />
+            </svg>
             <span>Mon–Sat: 9 AM – 7 PM IST</span>
           </div>
         </div>
       </div>
       <div class="footer-bottom">
-        <p class="footer-copyright">© <span id="footer-year"></span> NorthStar. All rights reserved. Built with ❤️ in India.</p>
+        <p class="footer-copyright">© <span id="footer-year"></span> NorthStar. All rights reserved. Built with ❤️ in
+          India.</p>
         <div class="footer-badges" aria-label="Security certifications">
           <div class="security-badge">
-            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+              aria-hidden="true">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
             SSL Secured
           </div>
           <div class="security-badge">
-            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+              aria-hidden="true">
+              <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
             Expert Certified
           </div>
           <div class="security-badge">
-            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+              aria-hidden="true">
+              <rect x="3" y="11" width="18" height="11" rx="2" />
+              <path d="M7 11V7a5 5 0 0110 0v4" />
+            </svg>
             256-bit Encrypted
           </div>
         </div>
@@ -293,10 +531,15 @@
     </div>
   </footer>
 
-  <a href="https://wa.me/919486409362?text=Hi%2C%20I%27d%20like%20to%20know%20more%20about%20your%20insurance%20services." class="whatsapp-float" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  <a href="https://wa.me/919486409362?text=Hi%2C%20I%27d%20like%20to%20know%20more%20about%20your%20insurance%20services."
+    class="whatsapp-float" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path
+        d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+    </svg>
     <span class="wa-label">Chat with Us</span>
   </a>
   <script src="../js/main.js?v=1.2"></script>
 </body>
+
 </html>

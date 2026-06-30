@@ -53,6 +53,15 @@
     }
   }
   </script>
+  <!-- Microsoft Clarity -->
+  <script type="text/javascript">
+    (function (c, l, a, r, i, t, y) {
+      c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+      t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+      y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+    })(window, document, "clarity", "script", "xf7hijyryt");
+  </script>
+
 </head>
 
 <body>
@@ -561,7 +570,8 @@
           <div class="testimonials-track" id="testimonials-track">
             <!-- Dynamically populated via testimonials.js?v=1.2 -->
             <div style="text-align: center; padding: var(--sp-12) 0; color: var(--text-secondary); width: 100%;">
-              <span class="btn-spinner" style="border-color: var(--primary); border-top-color: transparent; width: 32px; height: 32px; display: inline-block;"></span>
+              <span class="btn-spinner"
+                style="border-color: var(--primary); border-top-color: transparent; width: 32px; height: 32px; display: inline-block;"></span>
               <p style="margin-top: var(--sp-4);">Loading testimonials...</p>
             </div>
           </div>
@@ -584,7 +594,8 @@
           </button>
         </div>
         <div style="text-align: center; margin-top: var(--sp-8);">
-          <button class="btn btn-outline btn-lg" id="write-review-btn" aria-haspopup="dialog" aria-controls="feedback-modal">
+          <button class="btn btn-outline btn-lg" id="write-review-btn" aria-haspopup="dialog"
+            aria-controls="feedback-modal">
             ★ Share Your Feedback
           </button>
         </div>
@@ -873,7 +884,8 @@
       <div class="footer-grid">
         <div class="footer-brand">
           <div class="footer-logo">
-            <img src="assets/images/northstar-footer-logo.png" alt="NorthStar Financial Services" class="footer-logo-img" />
+            <img src="assets/images/northstar-footer-logo.png" alt="NorthStar Financial Services"
+              class="footer-logo-img" />
           </div>
           <p class="footer-tagline">
             <span style="display: block; margin-bottom: var(--sp-2);">
@@ -1006,51 +1018,66 @@
       <button class="modal-close-btn" id="modal-close-btn" aria-label="Close modal">×</button>
       <h3 class="modal-title" id="modal-title">Share Your Experience</h3>
       <p class="modal-subtitle">Your feedback helps us make tax filing and financial planning better for everyone.</p>
-      
+
       <form id="feedback-form" novalidate>
         <!-- Rating Widget -->
         <div class="form-group" style="text-align: center; margin-bottom: var(--sp-6);">
-          <label class="form-label" style="display: block; margin-bottom: var(--sp-2);">Your Rating <span aria-hidden="true">*</span></label>
-          <div class="star-rating-selector" role="radiogroup" aria-label="Star rating" style="display: flex; justify-content: center; gap: 8px;">
-            <button type="button" class="star-btn" data-value="1" aria-label="1 Star" role="radio" aria-checked="false">★</button>
-            <button type="button" class="star-btn" data-value="2" aria-label="2 Stars" role="radio" aria-checked="false">★</button>
-            <button type="button" class="star-btn" data-value="3" aria-label="3 Stars" role="radio" aria-checked="false">★</button>
-            <button type="button" class="star-btn" data-value="4" aria-label="4 Stars" role="radio" aria-checked="false">★</button>
-            <button type="button" class="star-btn" data-value="5" aria-label="5 Stars" role="radio" aria-checked="false">★</button>
+          <label class="form-label" style="display: block; margin-bottom: var(--sp-2);">Your Rating <span
+              aria-hidden="true">*</span></label>
+          <div class="star-rating-selector" role="radiogroup" aria-label="Star rating"
+            style="display: flex; justify-content: center; gap: 8px;">
+            <button type="button" class="star-btn" data-value="1" aria-label="1 Star" role="radio"
+              aria-checked="false">★</button>
+            <button type="button" class="star-btn" data-value="2" aria-label="2 Stars" role="radio"
+              aria-checked="false">★</button>
+            <button type="button" class="star-btn" data-value="3" aria-label="3 Stars" role="radio"
+              aria-checked="false">★</button>
+            <button type="button" class="star-btn" data-value="4" aria-label="4 Stars" role="radio"
+              aria-checked="false">★</button>
+            <button type="button" class="star-btn" data-value="5" aria-label="5 Stars" role="radio"
+              aria-checked="false">★</button>
           </div>
           <input type="hidden" id="feedback-rating" name="rating" required value="" />
-          <div class="form-error" id="rating-error" role="alert" style="display: block; text-align: center; color: var(--error); font-size: var(--text-xs); margin-top: var(--sp-1);"></div>
+          <div class="form-error" id="rating-error" role="alert"
+            style="display: block; text-align: center; color: var(--error); font-size: var(--text-xs); margin-top: var(--sp-1);">
+          </div>
         </div>
 
         <div class="form-row-2">
           <div class="form-group">
             <label class="form-label" for="fb-name">Full Name <span aria-hidden="true">*</span></label>
-            <input class="form-control" type="text" id="fb-name" name="name" placeholder="E.g., Rajesh Kumar" required maxlength="100" />
+            <input class="form-control" type="text" id="fb-name" name="name" placeholder="E.g., Rajesh Kumar" required
+              maxlength="100" />
             <div class="form-error" id="fb-name-error" role="alert"></div>
           </div>
           <div class="form-group">
             <label class="form-label" for="fb-role">Role / Location</label>
-            <input class="form-control" type="text" id="fb-role" name="role" placeholder="E.g., Freelancer, Bangalore" maxlength="100" />
+            <input class="form-control" type="text" id="fb-role" name="role" placeholder="E.g., Freelancer, Bangalore"
+              maxlength="100" />
             <div class="form-error" id="fb-role-error" role="alert"></div>
           </div>
         </div>
 
         <div class="form-group">
           <label class="form-label" for="fb-message">Your Feedback <span aria-hidden="true">*</span></label>
-          <textarea class="form-control" id="fb-message" name="message" rows="4" placeholder="How was your experience filing taxes or getting consultation with NorthStar?" required minlength="10" maxlength="1000" style="resize: vertical;"></textarea>
+          <textarea class="form-control" id="fb-message" name="message" rows="4"
+            placeholder="How was your experience filing taxes or getting consultation with NorthStar?" required
+            minlength="10" maxlength="1000" style="resize: vertical;"></textarea>
           <div class="form-error" id="fb-message-error" role="alert"></div>
         </div>
 
         <!-- Success/Error alert inside form -->
         <div class="success-message" id="fb-success" role="alert" style="display: none; margin-bottom: var(--sp-4);">
-          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"
+            aria-hidden="true">
             <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           <div id="fb-success-text">Thank you! Your feedback has been submitted successfully.</div>
         </div>
 
         <div class="error-message" id="fb-error" role="alert" style="display: none; margin-bottom: var(--sp-4);">
-          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"
+            aria-hidden="true">
             <circle cx="12" cy="12" r="10" />
             <line x1="15" y1="9" x2="9" y2="15" />
             <line x1="9" y1="9" x2="15" y2="15" />
@@ -1058,7 +1085,8 @@
           <div id="fb-error-text">Something went wrong. Please try again.</div>
         </div>
 
-        <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px;">
+        <button type="submit" class="btn btn-primary btn-lg"
+          style="width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px;">
           <span>Submit Feedback</span>
           <span class="btn-spinner" id="fb-spinner" style="display: none;"></span>
         </button>
